@@ -1,6 +1,6 @@
 package com.bank.system.model;
 
 public enum TokenStatus {
-	PROCESSING, CANCELLED, COMPLETED
+	IN_QUEUE, CANCELLED, COMPLETED
 
 }

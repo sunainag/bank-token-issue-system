@@ -5,42 +5,40 @@ import java.util.List;
 public class Counter {
 
 	private int id;
-	private List<ServiceType> listOfServices;
-	private List<Long> tokenIds;
-	private CounterType counterType;
+	private List<Service> listOfServices;
+	private ServiceUrgencyLevel serviceLevel;
 	private CounterStatus status;
-	
+
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
-	public List<ServiceType> getListOfServices() {
+
+	public List<Service> getListOfServices() {
 		return listOfServices;
 	}
-	public void setListOfServices(List<ServiceType> listOfServices) {
+
+	public void setListOfServices(List<Service> listOfServices) {
 		this.listOfServices = listOfServices;
 	}
-	public List<Long> getTokenIds() {
-		return tokenIds;
+
+	public ServiceUrgencyLevel getCounterType() {
+		return serviceLevel;
 	}
-	public void setTokenIds(List<Long> tokenIds) {
-		this.tokenIds = tokenIds;
+
+	public void setCounterType(ServiceUrgencyLevel counterType) {
+		this.serviceLevel = counterType;
 	}
-	public CounterType getCounterType() {
-		return counterType;
-	}
-	public void setCounterType(CounterType counterType) {
-		this.counterType = counterType;
-	}
+
 	public CounterStatus getStatus() {
 		return status;
 	}
+
 	public void setStatus(CounterStatus status) {
 		this.status = status;
 	}
-	
-	
-	
+
 }

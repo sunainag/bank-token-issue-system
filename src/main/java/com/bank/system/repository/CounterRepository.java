@@ -10,8 +10,9 @@ import com.bank.system.model.Counter;
 import com.bank.system.model.CounterStatus;
 
 @Repository
-public interface CounterRepository extends JpaRepository<Counter, Integer>{
+public interface CounterRepository extends JpaRepository<Counter, Integer> {
 
 	@Query("SELECT c FROM Counter c WHERE c.status = ?1")
 	List<Counter> findCountersByStatus(CounterStatus status);
+	
 }

@@ -4,12 +4,16 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -21,15 +25,26 @@ public class Token {
 	@Column(name = "tokenNumber")
 	private long tokenNumber;
 	
-	@Column(name = "servicesRequired")
 	private List<Service> servicesRequired;
+	
+	@Enumerated(EnumType.STRING)
+	@Column
 	private TokenStatus status;
+	
+	@OneToOne
+	@JoinColumn(name="customer_id")
 	private Customer customer;
+	
+	@Enumerated(EnumType.STRING)
+	@Column
 	private ServiceUrgencyLevel serviceLevel;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "counter_queue_id", nullable = false)
 	private CounterQueue counterQueue;
+	
+	@Column
+	private String comments;
 	
 	public long getTokenNumber() {
 		return tokenNumber;
@@ -77,5 +92,13 @@ public class Token {
 
 	public void setCounterQueue(CounterQueue counterQueue) {
 		this.counterQueue = counterQueue;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 }

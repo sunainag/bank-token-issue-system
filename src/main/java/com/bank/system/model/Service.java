@@ -9,7 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
+@Entity(name = "JoinTableCustomerService")
 @Table(name = "service")
 public class Service {
 
@@ -19,9 +19,11 @@ public class Service {
 	private int id;
 	
 	@Enumerated(EnumType.STRING)
+	@Column
 	private ServiceType serviceType;
 	
 	@Enumerated(EnumType.STRING)
+	@Column
 	private ServiceName name;
 	
 	@Column

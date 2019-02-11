@@ -11,13 +11,13 @@ import com.abs.banking.manager.CounterManager;
 import com.abs.banking.model.Counter;
 
 @RestController
-@RequestMapping(value = "/api/abs/bank/counter")
+@RequestMapping(value = "/api/abs/bank")
 public class CounterController {
 
 	@Autowired
 	private CounterManager counterManager;
 
-	@GetMapping(value = "/status")
+	@GetMapping(value = "/counters")
 	public List<Counter> getCounterDetails() {
 		return counterManager.getAllCounters();
 	}

@@ -13,23 +13,22 @@ import javax.persistence.Table;
 @Table(name = "counter")
 public class Counter {
 
-    public enum Priority {
-        HIGH,
-        NORMAL
-    }
+	public enum Priority {
+		HIGH, NORMAL
+	}
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Integer id;
 
-    @Column(unique = true)
-    private int number;
+	@Column(unique = true)
+	private int number;
 
-    @Enumerated(EnumType.STRING)
-    private Priority priority;
+	@Enumerated(EnumType.STRING)
+	private Priority priority;
 
-    @Column(name = "queue_size")
-    private int queueSize;
+	@Column(name = "queue_size")
+	private int queueSize;
 
 	public Integer getId() {
 		return id;
@@ -62,6 +61,5 @@ public class Counter {
 	public void setQueueSize(int queueSize) {
 		this.queueSize = queueSize;
 	}
-    
-    
+
 }

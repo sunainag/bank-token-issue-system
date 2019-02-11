@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
@@ -45,14 +47,15 @@ public class CounterManagerImpl implements CounterManager {
 
 	@Override
 	public Long createToken(TokenRequest tokenReq) {
-		// checkIfCustomerExists
-		Customer customer = customerService.findByMobile(tokenReq.getCustomerMobile());
-		if (customer == null) {
+		if (tokenReq.getCustomer() == null)
 			throw new BusinessException(ErrorCode.CUSTOMER_NOT_FOUND);
+		Customer customer = customerService.findByMobile(tokenReq.getCustomer().getMobile());
+		if (customer == null) {
+			customerService.createCustomer(tokenReq.getCustomer());
 		}
 		Token token = new Token();
 		token.setNumber(sequenceGenerator.generate());
-		
+
 		List<TokenServiceMapping> tokenServices = new ArrayList<>();
 		for (String svc : tokenReq.getServices()) {
 			Service service = tokenService.findServiceByName(svc);
@@ -87,8 +90,8 @@ public class CounterManagerImpl implements CounterManager {
 	@Override
 	public void setComments(@NotNull Long tokenNumber, String comments) {
 		Token token = getToken(tokenNumber);
-		token.getTokenServices().stream()
-				.filter(tsm -> tsm.getService().getId() == token.getCurrentService().getId()).findFirst().get().setComments(comments);
+		token.getTokenServices().stream().filter(tsm -> tsm.getService().getId() == token.getCurrentService().getId())
+				.findFirst().get().setComments(comments);
 		tokenService.saveOrUpdateToken(token);
 	}
 
@@ -97,8 +100,8 @@ public class CounterManagerImpl implements CounterManager {
 		Token token = getToken(tokenNumber);
 		Counter currentCounter = token.getCurrentCounter();
 		counterService.decrementQueueSize(currentCounter.getId());
-		
-		if(StatusCode.COMPLETED.equals(tokenStatus)) {
+
+		if (StatusCode.COMPLETED.equals(tokenStatus)) {
 			TokenServiceMapping nextService = null;
 			Iterator<TokenServiceMapping> i = token.getTokenServices().iterator();
 			while (i.hasNext()) {
@@ -108,20 +111,22 @@ public class CounterManagerImpl implements CounterManager {
 					break;
 				}
 			}
-			
+
 			if (nextService != null) {
 				token.setCurrentService(nextService.getService());
 				Counter nextCounter = counterAllocator.allocate(nextService.getService(), token.getCustomer());
 				currentCounter.setQueueSize(nextCounter.getQueueSize() + 1);
 				token.setCurrentCounter(nextCounter);
-			} else {
+			}
+			else {
 				token.setStatusCode(Token.StatusCode.COMPLETED);
 			}
-			
-		}else if(StatusCode.CANCELLED.equals(tokenStatus)) {
+
+		}
+		else if (StatusCode.CANCELLED.equals(tokenStatus)) {
 			token.setStatusCode(tokenStatus);
 		}
-		
+
 		tokenService.saveOrUpdateToken(token);
 	}
 
@@ -129,5 +134,13 @@ public class CounterManagerImpl implements CounterManager {
 	public List<Counter> getAllCounters() {
 		return counterService.getAll();
 	}
-	
+
+	@Override
+	public Map<Object, List<Long>> getActiveTokens() {
+		List<Token> activeTokens = tokenService.findByStatusCode(Token.StatusCode.ACTIVE);
+		Map<Object, List<Long>> counterToTokens = activeTokens.stream().collect(Collectors.groupingBy(
+				t -> t.getCurrentCounter().getNumber(), Collectors.mapping(Token::getNumber, Collectors.toList())));
+		return counterToTokens;
+	}
+
 }

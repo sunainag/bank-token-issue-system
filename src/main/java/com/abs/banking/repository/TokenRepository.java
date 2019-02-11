@@ -17,4 +17,6 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
 
 	@Query("SELECT distinct t.id FROM Token t WHERE t.counterId = ?1")
 	List<Long> findByCounterId(Integer counterId);
+
+	List<Token> findByStatusCode(Token.StatusCode statusCode);
 }

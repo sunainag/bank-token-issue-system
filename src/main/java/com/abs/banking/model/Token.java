@@ -20,40 +20,38 @@ import javax.validation.constraints.NotNull;
 @Table(name = "token")
 public class Token {
 
-    public enum StatusCode {
-        ACTIVE,
-        CANCELLED,
-        COMPLETED
-    }
+	public enum StatusCode {
+		ACTIVE, CANCELLED, COMPLETED
+	}
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private long id;
 
-    private long number;
+	private long number;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "customer_id")
+	private Customer customer;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "token")
-    private List<TokenServiceMapping> tokenServices;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "token")
+	private List<TokenServiceMapping> tokenServices;
 
-    @ManyToOne
-    @JoinColumn(name = "current_counter_id")
-    private Counter currentCounter;
+	@ManyToOne
+	@JoinColumn(name = "current_counter_id")
+	private Counter currentCounter;
 
-    @ManyToOne
-    @JoinColumn(name = "current_service_id")
-    private Service currentService;
+	@ManyToOne
+	@JoinColumn(name = "current_service_id")
+	private Service currentService;
 
-    @Enumerated(EnumType.STRING)
-    @NotNull
-    private StatusCode statusCode = StatusCode.ACTIVE;
+	@Enumerated(EnumType.STRING)
+	@NotNull
+	private StatusCode statusCode = StatusCode.ACTIVE;
 
-    @NotNull
-    private Date created;
+	@NotNull
+	private Date created;
 
 	public long getId() {
 		return id;
@@ -119,5 +117,4 @@ public class Token {
 		this.created = created;
 	}
 
-    
 }

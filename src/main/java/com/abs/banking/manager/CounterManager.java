@@ -1,6 +1,7 @@
 package com.abs.banking.manager;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.constraints.NotNull;
 
@@ -20,5 +21,7 @@ public interface CounterManager {
 	void updateTokenStatusById(Long tokenNumber, StatusCode tokenStatus);
 
 	List<Counter> getAllCounters();
-	
+
+	Map<Object, List<Long>> getActiveTokens();
+
 }

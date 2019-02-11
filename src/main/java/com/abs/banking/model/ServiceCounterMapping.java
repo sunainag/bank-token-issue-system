@@ -15,23 +15,23 @@ import javax.validation.constraints.NotNull;
 @Table(name = "service_counter_mapping")
 public class ServiceCounterMapping {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private long id;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "service_id")
-    private Service service;
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "service_id")
+	private Service service;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "counter_id")
-    private Counter counter;
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "counter_id")
+	private Counter counter;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private Customer.Type type;
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	private Customer.Type type;
 
 	public long getId() {
 		return id;
@@ -64,6 +64,5 @@ public class ServiceCounterMapping {
 	public void setType(Customer.Type type) {
 		this.type = type;
 	}
-    
-    
+
 }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.abs.banking.model.Customer;
 
 @Repository
-public interface CustomerRepository extends CrudRepository<Customer, Integer> {
+public interface CustomerRepository extends CrudRepository<Customer, Long> {
 
 	public Customer findByMobile(String mobile);
 

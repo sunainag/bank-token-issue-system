@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.abs.banking.exception.BusinessException;
 import com.abs.banking.exception.BusinessException.ErrorCode;
 import com.abs.banking.model.Token;
+import com.abs.banking.model.Token.StatusCode;
 import com.abs.banking.repository.ServiceRepository;
 import com.abs.banking.repository.TokenRepository;
 
@@ -20,7 +21,6 @@ public class TokenServiceImpl implements TokenService {
 
 	@Autowired
 	ServiceRepository serviceRepo;
-
 
 	@Override
 	public Token getTokenById(Long tokenId) {
@@ -52,6 +52,11 @@ public class TokenServiceImpl implements TokenService {
 			return serviceRepo.findById(nextServiceId).get();
 		else
 			throw new BusinessException(BusinessException.ErrorCode.SERVICE_NOT_FOUND);
+	}
+
+	@Override
+	public List<Token> findByStatusCode(StatusCode statusCode) {
+		return tokenRepo.findByStatusCode(statusCode);
 	}
 
 }

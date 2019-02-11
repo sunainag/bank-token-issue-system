@@ -4,21 +4,14 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import com.abs.banking.model.Customer;
+
 public class TokenRequest {
-   
+
 	@NotNull
-    private String customerMobile;
+	private List<String> services;
 
-    @NotNull
-    private List<String> services;
-
-	public String getCustomerMobile() {
-		return customerMobile;
-	}
-
-	public void setCustomerMobile(String customerMobile) {
-		this.customerMobile = customerMobile;
-	}
+	private Customer customer;
 
 	public List<String> getServices() {
 		return services;
@@ -27,6 +20,13 @@ public class TokenRequest {
 	public void setServices(List<String> services) {
 		this.services = services;
 	}
-    
-    
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
 }

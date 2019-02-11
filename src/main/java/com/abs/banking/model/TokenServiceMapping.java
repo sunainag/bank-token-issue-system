@@ -13,29 +13,29 @@ import javax.validation.constraints.NotNull;
 @Table(name = "token_service_mapping")
 public class TokenServiceMapping {
 
-    public TokenServiceMapping() {
-    }
+	public TokenServiceMapping() {
+	}
 
-    public TokenServiceMapping(Token token, Service service) {
-        this.service = service;
-        this.token = token;
-    }
+	public TokenServiceMapping(Token token, Service service) {
+		this.service = service;
+		this.token = token;
+	}
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private long id;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "service_id")
-    private Service service;
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "service_id")
+	private Service service;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "token_id")
-    private Token token;
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "token_id")
+	private Token token;
 
-    private String comments;
+	private String comments;
 
 	public long getId() {
 		return id;
@@ -69,5 +69,4 @@ public class TokenServiceMapping {
 		this.comments = comments;
 	}
 
-    
 }

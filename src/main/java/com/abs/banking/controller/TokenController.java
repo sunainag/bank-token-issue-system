@@ -1,6 +1,8 @@
 package com.abs.banking.controller;
 
-import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Map;
+
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,11 @@ public class TokenController {
 	@Autowired
 	private CounterManager countermanager;
 
+	@RequestMapping(value = "/tokens", method = RequestMethod.GET)
+	public Map<Object, List<Long>> activeTokens() {
+		return countermanager.getActiveTokens();
+	}
+
 	@PostMapping(value = "/tokens")
 	public void issueToken(@RequestBody @NotNull TokenRequest tokenRequest) {
 		countermanager.createToken(tokenRequest);
@@ -46,7 +53,6 @@ public class TokenController {
 	}
 
 	@RequestMapping(value = "/tokens/{tokenNumber}/complete", method = RequestMethod.PUT)
-	@Transactional
 	public void complete(@PathVariable("tokenNumber") @NotNull Long tokenNumber) {
 		countermanager.updateTokenStatusById(tokenNumber, StatusCode.COMPLETED);
 	}

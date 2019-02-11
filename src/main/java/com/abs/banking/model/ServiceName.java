@@ -1,4 +1,4 @@
-package com.bank.system.model;
+package com.abs.banking.model;
 
 public enum ServiceName {
 	ACCOUNT, CASH, LOAN, GENERAL

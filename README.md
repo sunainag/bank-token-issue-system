@@ -23,18 +23,18 @@ Build the Project
 mvn clean install -DskipTests
 
 Usage
-Run the application and go on http://localhost:8080/
+Run the application and go on http://localhost:8080/ for welcome page
 
 
 End points
 
-context path=/api/abs/bank
+context path=/abs/bank
 
 TokenController:
 GET /tokens Gives a counter wise list of active tokens
 POST /tokens Generates a new token, takes customer and service(s) in TokenRequest as Request body
 example:
-POST: http://localhost:8080/api/abs/bank/tokens
+POST: http://localhost:8080/abs/bank/tokens
 Request Body: 
 
           {
@@ -42,14 +42,15 @@ Request Body:
             "customer":{
                         "name":"abc",
                         "mobile":"123",
-                        "type":"REGULAR"
+                        "type":"REGULAR",
                         "address":{
                           "addressLine1":"addressLine1",
                           "addressLine2":"addressLine2",
                           "city":"city",
                           "state":"state",
                           "country":"country",
-                          "zipCode":"zipCode"
+                          "zipCode":"zipCode",
+                          "created":"2019-02-12"
                         }
             }
           }
@@ -59,6 +60,7 @@ PUT /tokens/{tokenNumber}/comment Records a comment against the current service 
 
 CounterController:
 GET /counters List all the counters
+example: Go to http://localhost:8080/abs/bank/counters for counter details
 
 
 Token Generation Strategy

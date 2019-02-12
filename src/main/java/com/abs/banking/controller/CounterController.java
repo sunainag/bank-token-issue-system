@@ -11,7 +11,7 @@ import com.abs.banking.manager.CounterManager;
 import com.abs.banking.model.Counter;
 
 @RestController
-@RequestMapping(value = "/api/abs/bank")
+@RequestMapping(value = "/abs/bank")
 public class CounterController {
 
 	@Autowired

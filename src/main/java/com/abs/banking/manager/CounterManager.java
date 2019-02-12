@@ -12,16 +12,16 @@ import com.abs.banking.model.Token.StatusCode;
 
 public interface CounterManager {
 
-	Long createToken(TokenRequest tokenRequest);
+	Integer createToken(TokenRequest tokenRequest);
 
-	void setComments(@NotNull Long tokenNumber, String comments);
+	void setComments(@NotNull Integer tokenNumber, String comments);
 
-	Token getToken(Long tokenId);
+	Token getToken(Integer number);
 
-	void updateTokenStatusById(Long tokenNumber, StatusCode tokenStatus);
+	void updateTokenStatusById(Integer tokenNumber, StatusCode tokenStatus);
 
 	List<Counter> getAllCounters();
 
-	Map<Object, List<Long>> getActiveTokens();
+	Map<Object, List<Integer>> getActiveTokens();
 
 }

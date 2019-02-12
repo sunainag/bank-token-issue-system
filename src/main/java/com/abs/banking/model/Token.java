@@ -28,7 +28,7 @@ public class Token {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
-	private long number;
+	private int number;
 
 	@NotNull
 	@ManyToOne
@@ -38,11 +38,11 @@ public class Token {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "token")
 	private List<TokenServiceMapping> tokenServices;
 
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.PERSIST)
 	@JoinColumn(name = "current_counter_id")
 	private Counter currentCounter;
 
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.PERSIST)
 	@JoinColumn(name = "current_service_id")
 	private Service currentService;
 
@@ -61,11 +61,11 @@ public class Token {
 		this.id = id;
 	}
 
-	public long getNumber() {
+	public int getNumber() {
 		return number;
 	}
 
-	public void setNumber(long number) {
+	public void setNumber(int number) {
 		this.number = number;
 	}
 

@@ -15,20 +15,20 @@ public class CounterServiceImpl implements CounterService {
 	@Autowired
 	CounterRepository counterRepo;
 
-	public synchronized void incrementQueueSize(int counterId) {
+	public synchronized Counter incrementQueueSize(int counterId) {
 		Counter counter = counterRepo.findById(counterId).get();
 		counter.setQueueSize(counter.getQueueSize() + 1);
-		saveCounter(counter);
+		return saveCounter(counter);
 	}
 
-	public synchronized void decrementQueueSize(int counterId) {
+	public synchronized Counter decrementQueueSize(int counterId) {
 		Counter counter = counterRepo.findById(counterId).get();
 		counter.setQueueSize(counter.getQueueSize() - 1);
-		saveCounter(counter);
+		return saveCounter(counter);
 	}
 
-	public synchronized void saveCounter(Counter counter) {
-		counterRepo.save(counter);
+	public synchronized Counter saveCounter(Counter counter) {
+		return counterRepo.save(counter);
 	}
 
 	@Override

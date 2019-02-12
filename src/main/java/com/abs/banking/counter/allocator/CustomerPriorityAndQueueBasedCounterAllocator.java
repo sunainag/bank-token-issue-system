@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import com.abs.banking.model.Counter;
@@ -30,8 +30,8 @@ public class CustomerPriorityAndQueueBasedCounterAllocator implements CounterAll
 	@Autowired
 	private CounterRepository counterRepo;
 
-	@PostConstruct
-	public void init() {
+	@EventListener
+	public void init(ContextRefreshedEvent event) {
 		serviceCounterMappingRepo.findAll().forEach(scm -> {
 			if (scm.getType().equals(Customer.Type.PREMIUM)) {
 				addServiceCounterMapping(scm, premiumServiceCounters);

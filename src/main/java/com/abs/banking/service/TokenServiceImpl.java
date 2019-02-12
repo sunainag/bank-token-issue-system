@@ -1,10 +1,10 @@
 package com.abs.banking.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.abs.banking.exception.BusinessException;
 import com.abs.banking.exception.BusinessException.ErrorCode;
@@ -23,17 +23,12 @@ public class TokenServiceImpl implements TokenService {
 	ServiceRepository serviceRepo;
 
 	@Override
-	public Token getTokenById(Long tokenId) {
-		Optional<Token> token = tokenRepo.findById(tokenId);
-		if (token.isPresent())
-			return token.get();
+	public Token getTokenByNumber(Integer tokenNumber) {
+		List<Token> token = tokenRepo.findByNumber(tokenNumber);
+		if (!CollectionUtils.isEmpty(token))
+			return token.get(0); //expected unique column `number` in table `token`
 		else
 			throw new BusinessException(ErrorCode.INVALID_TOKEN);
-	}
-
-	@Override
-	public List<Long> getTokenByCounterId(int counterId) {
-		return tokenRepo.findByCounterId(counterId);
 	}
 
 	@Override

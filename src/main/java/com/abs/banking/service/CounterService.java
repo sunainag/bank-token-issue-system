@@ -8,8 +8,8 @@ public interface CounterService {
 
 	List<Counter> getAll();
 
-	void incrementQueueSize(int counterId);
+	Counter incrementQueueSize(int counterId);
 
-	void decrementQueueSize(int counterId);
+	Counter decrementQueueSize(int counterId);
 
 }

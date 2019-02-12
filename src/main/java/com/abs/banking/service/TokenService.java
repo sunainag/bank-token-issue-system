@@ -8,9 +8,7 @@ import com.abs.banking.model.Token.StatusCode;
 
 public interface TokenService {
 
-	Token getTokenById(Long tokenId);
-
-	List<Long> getTokenByCounterId(int counterId);
+	Token getTokenByNumber(Integer tokenNumber);
 
 	Token saveOrUpdateToken(Token token);
 

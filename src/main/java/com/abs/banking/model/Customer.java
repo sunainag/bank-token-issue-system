@@ -15,6 +15,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Entity
 @Table(name = "customer")
 public class Customer {
@@ -43,6 +47,10 @@ public class Customer {
 	@JoinColumn(name = "address_id")
 	private Address address;
 
+	// Formats output date when this DTO is passed through JSON
+	@JsonFormat(pattern = "dd/MM/yyyy")
+	// Allows dd/MM/yyyy date to be passed into GET request in JSON
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date created;
 
 	public long getId() {

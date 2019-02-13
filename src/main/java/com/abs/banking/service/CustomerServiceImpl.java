@@ -3,6 +3,9 @@ package com.abs.banking.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.abs.banking.dto.TokenRequest;
+import com.abs.banking.exception.BusinessException;
+import com.abs.banking.exception.BusinessException.ErrorCode;
 import com.abs.banking.model.Customer;
 import com.abs.banking.repository.CustomerRepository;
 
@@ -17,15 +20,34 @@ public class CustomerServiceImpl implements CustomerService {
 		return customer != null && customerRepo.existsById(customer.getId());
 	}
 
-	public Customer findByMobile(String mobile) {
+	/**
+	 * @param mobile Customer contact number provided in the payload(@see TokenRequest)
+	 * @return
+	 */
+	private Customer findByMobile(String mobile) {
 		return customerRepo.findByMobile(mobile);
 	}
 
 	@Override
-	public Customer createCustomer(Customer customer) {
+	public Customer create(Customer customer) {
 		if (customer != null)
 			return customerRepo.save(customer);
 		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.abs.banking.service.CustomerService#getByToken(com.abs.banking.dto.TokenRequest)
+	 * TODO: provide abstraction for findByMobile, what if want to search by any other criteria/condition
+	 */
+	@Override
+	public Customer getByToken(TokenRequest tokenReq) {
+		if (tokenReq.getCustomer() == null)
+			throw new BusinessException(ErrorCode.CUSTOMER_NOT_FOUND);
+		Customer customer = findByMobile(tokenReq.getCustomer().getMobile());
+		if (customer == null) {
+			create(tokenReq.getCustomer());
+		}
+		return customer;
 	}
 
 }

@@ -9,7 +9,7 @@ import com.abs.banking.model.Token;
 
 @Repository
 public interface TokenRepository extends JpaRepository<Token, Long> {
-	
+
 	List<Token> findByNumber(Integer number);
 
 	List<Token> findByStatusCode(Token.StatusCode statusCode);

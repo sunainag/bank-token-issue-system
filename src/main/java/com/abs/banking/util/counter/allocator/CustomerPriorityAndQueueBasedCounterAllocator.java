@@ -1,4 +1,4 @@
-package com.abs.banking.counter.allocator;
+package com.abs.banking.util.counter.allocator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,9 +11,10 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import com.abs.banking.exception.BusinessException;
 import com.abs.banking.model.Counter;
 import com.abs.banking.model.Customer;
-import com.abs.banking.model.Service;
+import com.abs.banking.model.Services;
 import com.abs.banking.model.ServiceCounterMapping;
 import com.abs.banking.repository.CounterRepository;
 import com.abs.banking.repository.ServiceCounterMappingRepo;
@@ -43,7 +44,7 @@ public class CustomerPriorityAndQueueBasedCounterAllocator implements CounterAll
 	}
 
 	@Override
-	public Counter allocate(Service service, Customer customer) {
+	public Counter allocate(Services service, Customer customer) {
 		List<Counter> counters = getServiceCountersBasedOnCustomerPriority(service, customer);
 		if (!counters.isEmpty()) {
 			// Allocate counter with minimum queue size
@@ -61,15 +62,21 @@ public class CustomerPriorityAndQueueBasedCounterAllocator implements CounterAll
 		return null;
 	}
 
-	private List<Counter> getServiceCountersBasedOnCustomerPriority(Service service, Customer customer) {
+	private List<Counter> getServiceCountersBasedOnCustomerPriority(Services service, Customer customer) {
 		List<Counter> counters = Collections.emptyList();
 		switch (customer.getType()) {
 		case PREMIUM:
-			counters = premiumServiceCounters.get(service.getName());
-			break;
+			if (premiumServiceCounters != null) {
+				counters = premiumServiceCounters.get(service.getName());
+				break;
+			}
 		case REGULAR:
-			counters = normalServiceCounters.get(service.getName());
-			break;
+			if (normalServiceCounters != null) {
+				counters = normalServiceCounters.get(service.getName());
+				break;
+			}
+		default:
+			throw new BusinessException(BusinessException.ErrorCode.COUNTERS_NOT_INITIALIZED_CORRECTLY);
 		}
 		return counters;
 	}

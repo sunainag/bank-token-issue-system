@@ -7,4 +7,6 @@ import com.abs.banking.model.Counter;
 
 @Repository
 public interface CounterRepository extends JpaRepository<Counter, Integer> {
+
+	Counter findByNumber(Integer counterNum);
 }

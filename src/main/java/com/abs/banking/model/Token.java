@@ -16,6 +16,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+/**
+ * @author sunainag
+ * 
+ *         Token generated for the customer on request
+ *
+ */
 @Entity
 @Table(name = "token")
 public class Token {
@@ -28,6 +34,7 @@ public class Token {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
+	@NotNull
 	private int number;
 
 	@NotNull
@@ -38,13 +45,13 @@ public class Token {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "token")
 	private List<TokenServiceMapping> tokenServices;
 
-	@ManyToOne(cascade=CascadeType.PERSIST)
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "current_counter_id")
 	private Counter currentCounter;
 
-	@ManyToOne(cascade=CascadeType.PERSIST)
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "current_service_id")
-	private Service currentService;
+	private Services currentService;
 
 	@Enumerated(EnumType.STRING)
 	@NotNull
@@ -53,14 +60,11 @@ public class Token {
 	@NotNull
 	private Date created;
 
-	public long getId() {
-		return id;
+	public Token(int number, Customer cust) {
+		this.number=number;
+		this.customer=cust;
 	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
+	
 	public int getNumber() {
 		return number;
 	}
@@ -93,11 +97,11 @@ public class Token {
 		this.currentCounter = currentCounter;
 	}
 
-	public Service getCurrentService() {
+	public Services getCurrentService() {
 		return currentService;
 	}
 
-	public void setCurrentService(Service currentService) {
+	public void setCurrentService(Services currentService) {
 		this.currentService = currentService;
 	}
 
@@ -116,5 +120,6 @@ public class Token {
 	public void setCreated(Date created) {
 		this.created = created;
 	}
+
 
 }

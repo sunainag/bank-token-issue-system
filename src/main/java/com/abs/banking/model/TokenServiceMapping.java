@@ -16,7 +16,7 @@ public class TokenServiceMapping {
 	public TokenServiceMapping() {
 	}
 
-	public TokenServiceMapping(Token token, Service service) {
+	public TokenServiceMapping(Token token, Services service) {
 		this.service = service;
 		this.token = token;
 	}
@@ -28,7 +28,7 @@ public class TokenServiceMapping {
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "service_id")
-	private Service service;
+	private Services service;
 
 	@NotNull
 	@ManyToOne
@@ -45,11 +45,11 @@ public class TokenServiceMapping {
 		this.id = id;
 	}
 
-	public Service getService() {
+	public Services getService() {
 		return service;
 	}
 
-	public void setService(Service service) {
+	public void setService(Services service) {
 		this.service = service;
 	}
 

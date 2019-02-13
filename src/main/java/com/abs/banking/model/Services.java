@@ -1,12 +1,24 @@
 package com.abs.banking.model;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "service")
-public class Service {
+public class Services {
 
 	public enum Type {
 		PREMIUM, REGULAR
@@ -35,40 +47,21 @@ public class Service {
 		return id;
 	}
 
-	public void setId(long id) {
-		this.id = id;
-	}
-
 	public String getName() {
 		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public Type getType() {
 		return type;
 	}
 
-	public void setType(Type type) {
-		this.type = type;
-	}
-
 	public Long getNextServiceId() {
 		return nextServiceId;
-	}
-
-	public void setNextServiceId(Long nextServiceId) {
-		this.nextServiceId = nextServiceId;
 	}
 
 	public List<Counter> getCounters() {
 		return counters;
 	}
 
-	public void setCounters(List<Counter> counters) {
-		this.counters = counters;
-	}
-
+	
 }

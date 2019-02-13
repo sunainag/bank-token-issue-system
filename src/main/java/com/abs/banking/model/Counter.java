@@ -62,4 +62,8 @@ public class Counter {
 		this.queueSize = queueSize;
 	}
 
+	@Override
+	public String toString() {
+		return "Counter [number=" + number + ", priority=" + priority + ", queueSize=" + queueSize + "]";
+	}
 }

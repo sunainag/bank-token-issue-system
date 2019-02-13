@@ -22,7 +22,7 @@ public class ServiceCounterMapping {
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "service_id")
-	private Service service;
+	private Services service;
 
 	@NotNull
 	@ManyToOne
@@ -41,11 +41,11 @@ public class ServiceCounterMapping {
 		this.id = id;
 	}
 
-	public Service getService() {
+	public Services getService() {
 		return service;
 	}
 
-	public void setService(Service service) {
+	public void setService(Services service) {
 		this.service = service;
 	}
 

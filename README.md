@@ -1,12 +1,13 @@
-Prerequisites
+Prerequisites:
+
 Java 8
 Maven
 MySQL
 
-Configurations
+Configurations:
 Open the application.properties file and set the MySQL configuration.
 
-Schema installation
+Schema installation:
 Run the file install_schema.sql present in src/main/resources to set up the database. Following tables would be created:
 
 customer
@@ -19,19 +20,21 @@ token_service_mapping
 
 From Editor (IntelliJ or Eclipse) import as Existing Maven Project and run it as Spring Boot App.
 
-Build the Project
-mvn clean install -DskipTests
+Build the Project:
+mvn clean install
 
-Usage
+Usage:
 Run the application and go on http://localhost:8080/ for welcome page
 
 
-End points
+End points:
 
 context path=/abs/bank
 
 TokenController:
+
 GET /tokens Gives a counter wise list of active tokens
+GET /tokens?id=tokenNumber Gives details for a particular token number passed
 POST /tokens Generates a new token, takes customer and service(s) in TokenRequest as Request body
 example:
 POST: http://localhost:8080/abs/bank/tokens
@@ -50,22 +53,24 @@ Request Body:
                           "state":"state",
                           "country":"country",
                           "zipCode":"zipCode",
-                          "created":"2019-02-12"
+                          "created":"13/02/2019"
                         }
             }
           }
+
+
+CounterController:
+
 PUT /tokens/{tokenNumber}/cancel Cancels an active token
 PUT /tokens/{tokenNumber}/complete Marks a service token a complete, in case the token is a multi-counter token, it gets queued at the next counter
 PUT /tokens/{tokenNumber}/comment Records a comment against the current service of the token
-
-CounterController:
+GET /counters?number=counterNumber Get the details of the given counter with number='counterNumber'
 GET /counters List all the counters
 example: Go to http://localhost:8080/abs/bank/counters for counter details
 
 
 Token Generation Strategy
-Token generation strategy has been kept as pluggable. The current default implementation first identifies counters based on the customer type and then chooses the counter with the minimum queue size.
-
+he current default implementation first identifies counters based on the customer type and then chooses the counter with the minimum queue size.
 While issuing a token, the systems identifies all the services that need to be served by this token (either user chooses multiple services or service that by itself is a multi-counter service). Once a token is marked as complete for the current service, token is queued at the next counter for the next service.
 
 Token Sequence Generation

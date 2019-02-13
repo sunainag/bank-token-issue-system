@@ -61,10 +61,10 @@ public class Token {
 	private Date created;
 
 	public Token(int number, Customer cust) {
-		this.number=number;
-		this.customer=cust;
+		this.number = number;
+		this.customer = cust;
 	}
-	
+
 	public int getNumber() {
 		return number;
 	}
@@ -120,6 +120,5 @@ public class Token {
 	public void setCreated(Date created) {
 		this.created = created;
 	}
-
 
 }

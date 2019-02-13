@@ -8,7 +8,7 @@ import com.abs.banking.model.Token;
 import com.abs.banking.model.Token.StatusCode;
 
 public interface TokenService {
-	
+
 	Token generateToken(Customer customer, List<String> tokenServices);
 
 	Token saveOrUpdate(Token token);
@@ -16,7 +16,7 @@ public interface TokenService {
 	Services findServiceById(Long nextServiceId);
 
 	List<Token> findByStatusCode(StatusCode statusCode);
-	
+
 	void updateStatus(Token token, StatusCode statusCode);
 
 	Token getTokenByNumber(Integer tokenNumber);

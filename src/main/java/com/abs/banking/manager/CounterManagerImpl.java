@@ -43,7 +43,7 @@ public class CounterManagerImpl implements CounterManager {
 			return ResponseEntity.status(HttpStatus.OK).body(counter);
 		throw new BusinessException(BusinessException.ErrorCode.INVALID_COUNTER_ID);
 	}
-	
+
 	@Override
 	public void setComments(Integer tokenNumber, String comments) {
 		Token token = getToken(tokenNumber);
@@ -51,7 +51,7 @@ public class CounterManagerImpl implements CounterManager {
 				.findFirst().get().setComments(comments);
 		tokenService.saveOrUpdate(token);
 	}
-	
+
 	@Override
 	public void updateTokenStatusById(Integer tokenNumber, StatusCode newTokenStatus) {
 		Token token = getToken(tokenNumber);
@@ -61,10 +61,10 @@ public class CounterManagerImpl implements CounterManager {
 			boolean nextService = tokenService.assignNextService(token);
 			if (nextService) {
 				token.setCurrentCounter(counterService.allocateCounter(token));
-			} 
+			}
 
-		} 
-		tokenService.updateStatus(token,newTokenStatus);
+		}
+		tokenService.updateStatus(token, newTokenStatus);
 	}
 
 	private Token getToken(Integer tokenNumber) {

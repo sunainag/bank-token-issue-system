@@ -1,8 +1,8 @@
-Prerequisites:
+**Prerequisites:**
 
-Java 8
-Maven
-MySQL
+- [ ]Java 8
+- [ ]Maven
+- [ ]MySQL
 
 Configurations:
 Open the application.properties file and set the MySQL configuration.

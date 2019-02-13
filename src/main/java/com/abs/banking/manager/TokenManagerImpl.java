@@ -22,17 +22,17 @@ public class TokenManagerImpl implements TokenManager {
 
 	@Autowired
 	CustomerService customerService;
-	
+
 	@Autowired
 	CounterService counterService;
-	
+
 	//TODO: token service should notify counter service to increament queue size
 	@Override
 	public ResponseEntity<String> createToken(TokenRequest tokenReq) {
 		Customer customer = customerService.getByToken(tokenReq);
 		Token token = tokenService.generateToken(customer, tokenReq.getServices());
 		counterService.allocateCounter(token);
-		
+
 		tokenService.saveOrUpdate(token);
 		return ResponseEntity.status(HttpStatus.OK).body("Token number assigned:" + token.getNumber());
 	}
@@ -45,8 +45,9 @@ public class TokenManagerImpl implements TokenManager {
 	@Override
 	public Map<Integer, List<Integer>> getActiveTokens() {
 		List<Token> activeTokens = tokenService.findByStatusCode(Token.StatusCode.ACTIVE);
-		Map<Integer, List<Integer>> counterToTokens = activeTokens.stream().collect(Collectors.groupingBy(
-				t -> Integer.valueOf(t.getCurrentCounter().getNumber()), Collectors.mapping(Token::getNumber, Collectors.toList())));
+		Map<Integer, List<Integer>> counterToTokens = activeTokens.stream()
+				.collect(Collectors.groupingBy(t -> Integer.valueOf(t.getCurrentCounter().getNumber()),
+						Collectors.mapping(Token::getNumber, Collectors.toList())));
 		return counterToTokens;
 	}
 

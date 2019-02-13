@@ -31,12 +31,12 @@ public class TokenServiceImpl implements TokenService {
 
 	@Autowired
 	SequenceGenerator sequenceGenerator;
-	
+
 	@Override
 	public Token generateToken(Customer customer, List<String> tokenServices) {
 		Token token = new Token(sequenceGenerator.generate(), customer);
 
-		List<TokenServiceMapping> tokenServicelist = getTokenServices(token,tokenServices);
+		List<TokenServiceMapping> tokenServicelist = getTokenServices(token, tokenServices);
 
 		token.setTokenServices(tokenServicelist);
 		token.setCreated(new Date());
@@ -103,16 +103,15 @@ public class TokenServiceImpl implements TokenService {
 		}
 		return false;
 	}
-	
+
 	private Services findServiceByName(String name) {
 		return serviceRepo.findByName(name);
 	}
 
 	@Override
-	public void updateStatus(Token token,StatusCode statusCode) {
+	public void updateStatus(Token token, StatusCode statusCode) {
 		token.setStatusCode(statusCode);
 		saveOrUpdate(token);
 	}
-
 
 }

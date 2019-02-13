@@ -14,9 +14,9 @@ public interface CounterManager {
 	List<Counter> getAllCounters();
 
 	ResponseEntity<Counter> getCounter(Integer counterNumber);
-	
+
 	void setComments(@NotNull Integer tokenNumber, String comments);
-	
+
 	void updateTokenStatusById(Integer tokenNumber, StatusCode tokenStatus);
 
 }

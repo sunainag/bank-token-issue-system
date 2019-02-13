@@ -40,7 +40,8 @@ public class CounterController {
 	}
 
 	@PatchMapping(value = "counters/{counterNumber}/tokens/{tokenNumber}/comment")
-	public void commentOnToken(@PathVariable("tokenNumber") @NotNull Integer tokenNumber, @RequestBody String comments) {
+	public void commentOnToken(@PathVariable("tokenNumber") @NotNull Integer tokenNumber,
+			@RequestBody String comments) {
 		counterManager.setComments(tokenNumber, comments);
 	}
 

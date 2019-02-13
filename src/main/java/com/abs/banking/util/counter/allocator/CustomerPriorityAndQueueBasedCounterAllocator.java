@@ -86,9 +86,9 @@ public class CustomerPriorityAndQueueBasedCounterAllocator implements CounterAll
 		List<Counter> counters = serviceCounters.get(serviceName);
 		if (counters == null) {
 			counters = new ArrayList<>();
-			serviceCounters.put(serviceName, counters);
 		}
 		counters.add(scm.getCounter());
+		serviceCounters.put(serviceName, counters);
 	}
 
 }

@@ -9,9 +9,7 @@ import com.abs.banking.model.Token.StatusCode;
 
 public interface TokenService {
 
-	Token generateToken(Customer customer, List<String> tokenServices);
-
-	Token saveOrUpdate(Token token);
+	Token issueToken(Customer customer, List<String> tokenServices);
 
 	Services findServiceById(Long nextServiceId);
 
@@ -21,6 +19,8 @@ public interface TokenService {
 
 	Token getTokenByNumber(Integer tokenNumber);
 
-	boolean assignNextService(Token token);
+	boolean isTokenInvalid(Token token);
+
+	void comment(Integer tokenNumber, String comments);
 
 }

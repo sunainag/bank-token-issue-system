@@ -37,6 +37,10 @@ public class Address {
 	@NotNull
 	private Date created;
 
+	public Address() {
+		this.created=new Date();
+	}
+	
 	public long getId() {
 		return id;
 	}

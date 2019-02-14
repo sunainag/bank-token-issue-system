@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Table(name = "customer")
 public class Customer {
 
-	public enum Type {
+	public enum CustomerType {
 		PREMIUM, REGULAR
 	}
 
@@ -40,7 +40,7 @@ public class Customer {
 
 	@NotNull
 	@Enumerated(EnumType.STRING)
-	private Type type = Type.REGULAR;
+	private CustomerType type = CustomerType.REGULAR;
 
 	@NotNull
 	@OneToOne(cascade = CascadeType.ALL)
@@ -52,6 +52,10 @@ public class Customer {
 	// Allows dd/MM/yyyy date to be passed into GET request in JSON
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date created;
+	
+	public Customer() {
+		this.created = new Date();
+	}
 
 	public long getId() {
 		return id;
@@ -77,11 +81,11 @@ public class Customer {
 		this.mobile = mobile;
 	}
 
-	public Type getType() {
+	public CustomerType getType() {
 		return type;
 	}
 
-	public void setType(Type type) {
+	public void setType(CustomerType type) {
 		this.type = type;
 	}
 

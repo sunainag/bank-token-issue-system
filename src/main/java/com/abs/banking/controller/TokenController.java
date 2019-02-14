@@ -34,15 +34,15 @@ public class TokenController {
 	public Map<Integer, List<Integer>> activeTokens() {
 		return tokenManager.getActiveTokens();
 	}
-
-	@PostMapping(value = "/tokens")
-	public ResponseEntity<String> issueToken(@RequestBody @NotNull TokenRequest tokenRequest) {
-		return tokenManager.createToken(tokenRequest);
-	}
-
+	
 	@GetMapping(value = "/tokens/{tokenNumber}")
 	public @ResponseBody Token getToken(@PathVariable("tokenNumber") @NotNull Integer tokenNumber) {
 		return tokenManager.getToken(tokenNumber);
+	}
+
+	@PostMapping(value = "/tokens")
+	public ResponseEntity<String> issueToken(@RequestBody @NotNull TokenRequest tokenRequest) {
+		return tokenManager.issueToken(tokenRequest);
 	}
 
 }

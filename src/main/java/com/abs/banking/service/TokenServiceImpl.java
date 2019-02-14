@@ -1,7 +1,6 @@
 package com.abs.banking.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,17 +30,67 @@ public class TokenServiceImpl implements TokenService {
 
 	@Autowired
 	SequenceGenerator sequenceGenerator;
+	
+	@Autowired
+	TokenQueueService tokenQueueService;
 
 	@Override
-	public Token generateToken(Customer customer, List<String> tokenServices) {
-		Token token = new Token(sequenceGenerator.generate(), customer);
+	public Token issueToken(Customer customer, List<String> services) {
+		Token token = generateTokenNumber(customer);
+		assignTokenServices(token,services);
+		tokenQueueService.putInQueue(token);
+		return saveOrUpdate(token);
+	}
 
-		List<TokenServiceMapping> tokenServicelist = getTokenServices(token, tokenServices);
+	@Override
+	public Token getTokenByNumber(Integer tokenNumber) {
+		List<Token> token = tokenRepo.findByNumber(tokenNumber);
+		if (!CollectionUtils.isEmpty(token))
+			return token.get(0); // expected unique column `number` in table `token`
+		else
+			throw new BusinessException(ErrorCode.INVALID_TOKEN);
+	}
+	
+	@Override
+	public void comment(Integer tokenNumber, String comments) {
+		Token token = getTokenByNumber(tokenNumber);
+		token.getTokenServices().stream().filter(tsm -> tsm.getService().getId() == token.getCurrentService().getId())
+				.findFirst().get().setComments(comments);
+		saveOrUpdate(token);
+	}
 
+	@Override
+	public Services findServiceById(Long nextServiceId) {
+		if (serviceRepo.findById(nextServiceId).isPresent())
+			return serviceRepo.findById(nextServiceId).get();
+		else
+			throw new BusinessException(BusinessException.ErrorCode.SERVICE_NOT_FOUND);
+	}
+
+	@Override
+	public List<Token> findByStatusCode(StatusCode statusCode) {
+		return tokenRepo.findByStatusCode(statusCode);
+	}
+
+	@Override
+	public void updateStatus(Token token, StatusCode statusCode) {
+		token.setStatusCode(statusCode);
+		saveOrUpdate(token);
+	}
+
+	@Override
+	public boolean isTokenInvalid(Token token) {
+		return StatusCode.COMPLETED.equals(token.getStatusCode()) || StatusCode.CANCELLED.equals(token.getStatusCode());
+	}
+	
+	private Token generateTokenNumber(Customer customer) {
+		return new Token(sequenceGenerator.generate(), customer);
+	}
+	
+	private void assignTokenServices(Token token, List<String> services) {
+		List<TokenServiceMapping> tokenServicelist = getTokenServices(token, services);
 		token.setTokenServices(tokenServicelist);
-		token.setCreated(new Date());
 		token.setCurrentService(tokenServicelist.get(0).getService());
-		return token;
 	}
 
 	private List<TokenServiceMapping> getTokenServices(Token token, List<String> tokenServices) {
@@ -61,57 +110,11 @@ public class TokenServiceImpl implements TokenService {
 		return tokenServiceList;
 	}
 
-	@Override
-	public Token getTokenByNumber(Integer tokenNumber) {
-		List<Token> token = tokenRepo.findByNumber(tokenNumber);
-		if (!CollectionUtils.isEmpty(token))
-			return token.get(0); // expected unique column `number` in table `token`
-		else
-			throw new BusinessException(ErrorCode.INVALID_TOKEN);
-	}
-
-	@Override
-	public Token saveOrUpdate(Token token) {
-		return tokenRepo.save(token);
-	}
-
-	@Override
-	public Services findServiceById(Long nextServiceId) {
-		if (serviceRepo.findById(nextServiceId).isPresent())
-			return serviceRepo.findById(nextServiceId).get();
-		else
-			throw new BusinessException(BusinessException.ErrorCode.SERVICE_NOT_FOUND);
-	}
-
-	@Override
-	public List<Token> findByStatusCode(StatusCode statusCode) {
-		return tokenRepo.findByStatusCode(statusCode);
-	}
-
-	@Override
-	public boolean assignNextService(Token token) {
-		TokenServiceMapping nextService = null;
-		Iterator<TokenServiceMapping> i = token.getTokenServices().iterator();
-		while (i.hasNext()) {
-			TokenServiceMapping tsm = i.next();
-			if (tsm.getService().getId() == token.getCurrentService().getId() && i.hasNext()) {
-				nextService = i.next();
-				token.setCurrentService(nextService.getService());
-				saveOrUpdate(token);
-				return true;
-			}
-		}
-		return false;
-	}
-
 	private Services findServiceByName(String name) {
 		return serviceRepo.findByName(name);
 	}
-
-	@Override
-	public void updateStatus(Token token, StatusCode statusCode) {
-		token.setStatusCode(statusCode);
-		saveOrUpdate(token);
+	
+	private Token saveOrUpdate(Token token) {
+		return tokenRepo.save(token);
 	}
-
 }

@@ -34,7 +34,7 @@ public class CustomerPriorityAndQueueBasedCounterAllocator implements CounterAll
 	@EventListener
 	public void init(ContextRefreshedEvent event) {
 		serviceCounterMappingRepo.findAll().forEach(scm -> {
-			if (scm.getType().equals(Customer.Type.PREMIUM)) {
+			if (scm.getType().equals(Customer.CustomerType.PREMIUM)) {
 				addServiceCounterMapping(scm, premiumServiceCounters);
 			}
 			else {

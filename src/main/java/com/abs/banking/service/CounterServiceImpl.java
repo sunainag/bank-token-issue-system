@@ -1,6 +1,7 @@
 package com.abs.banking.service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.abs.banking.model.Counter;
 import com.abs.banking.model.Token;
+import com.abs.banking.model.TokenServiceMapping;
 import com.abs.banking.repository.CounterRepository;
 import com.abs.banking.util.counter.allocator.CounterAllocator;
 
@@ -42,6 +44,19 @@ public class CounterServiceImpl implements CounterService {
 	@Override
 	public Counter removeToken(Integer counterId) {
 		return alterQueueSize(counterId, -1);
+	}
+	
+	private Token assignNextService(Token token) {
+		TokenServiceMapping nextService = null;
+		Iterator<TokenServiceMapping> i = token.getTokenServices().iterator();
+		while (i.hasNext()) {
+			TokenServiceMapping tsm = i.next();
+			if (tsm.getService().getId() == token.getCurrentService().getId() && i.hasNext()) {
+				nextService = i.next();
+				token.setCurrentService(nextService.getService());
+			}
+		}
+		return token;
 	}
 
 	public synchronized Counter alterQueueSize(int counterId, int count) {

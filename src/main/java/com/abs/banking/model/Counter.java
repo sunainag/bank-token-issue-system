@@ -30,28 +30,22 @@ public class Counter {
 	@Column(name = "queue_size")
 	private int queueSize;
 
-	public Integer getId() {
-		return id;
+	private Counter(CounterBuilder builder) {
+		this.number=builder.number;
+		this.priority=builder.priority;
+		this.queueSize=builder.queueSize;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public Integer getId() {
+		return id;
 	}
 
 	public int getNumber() {
 		return number;
 	}
 
-	public void setNumber(int number) {
-		this.number = number;
-	}
-
 	public Priority getPriority() {
 		return priority;
-	}
-
-	public void setPriority(Priority priority) {
-		this.priority = priority;
 	}
 
 	public int getQueueSize() {
@@ -65,5 +59,30 @@ public class Counter {
 	@Override
 	public String toString() {
 		return "Counter [number=" + number + ", priority=" + priority + ", queueSize=" + queueSize + "]";
+	}
+
+	public static class CounterBuilder {
+
+		private int number;
+		private Priority priority;
+		private int queueSize;
+
+		public CounterBuilder(int number) {
+			this.number=number;
+		}
+
+		public CounterBuilder priority(Priority priority) {
+			this.priority = priority;
+			return this;
+		}
+
+		public CounterBuilder queueSize(int queueSize) {
+			this.queueSize = queueSize;
+			return this;
+		}
+
+		public Counter build() {
+			return new Counter(this);
+		}
 	}
 }

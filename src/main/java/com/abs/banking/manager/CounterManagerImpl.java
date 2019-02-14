@@ -13,6 +13,7 @@ import com.abs.banking.model.Token;
 import com.abs.banking.model.Token.StatusCode;
 import com.abs.banking.service.CounterService;
 import com.abs.banking.service.CustomerService;
+import com.abs.banking.service.TokenQueueService;
 import com.abs.banking.service.TokenService;
 import com.abs.banking.util.counter.allocator.CounterAllocator;
 
@@ -31,6 +32,9 @@ public class CounterManagerImpl implements CounterManager {
 	@Autowired
 	CounterAllocator counterAllocator;
 
+	@Autowired
+	TokenQueueService tokenQueueService;
+
 	@Override
 	public List<Counter> getAllCounters() {
 		return counterService.getAllCounters();
@@ -46,24 +50,15 @@ public class CounterManagerImpl implements CounterManager {
 
 	@Override
 	public void setComments(Integer tokenNumber, String comments) {
-		Token token = getToken(tokenNumber);
-		token.getTokenServices().stream().filter(tsm -> tsm.getService().getId() == token.getCurrentService().getId())
-				.findFirst().get().setComments(comments);
-		tokenService.saveOrUpdate(token);
+		tokenService.comment(tokenNumber, comments);
 	}
 
 	@Override
 	public void updateTokenStatusById(Integer tokenNumber, StatusCode newTokenStatus) {
 		Token token = getToken(tokenNumber);
-		counterService.removeToken(token.getCurrentCounter().getId());
+		
+		tokenQueueService.pollNextInQueueWithStatus(newTokenStatus);
 
-		if (StatusCode.COMPLETED.equals(newTokenStatus)) {
-			boolean nextService = tokenService.assignNextService(token);
-			if (nextService) {
-				token.setCurrentCounter(counterService.allocateCounter(token));
-			}
-
-		}
 		tokenService.updateStatus(token, newTokenStatus);
 	}
 

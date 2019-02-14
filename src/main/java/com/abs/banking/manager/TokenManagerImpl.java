@@ -26,15 +26,13 @@ public class TokenManagerImpl implements TokenManager {
 	@Autowired
 	CounterService counterService;
 
-	//TODO: token service should notify counter service to increament queue size
 	@Override
-	public ResponseEntity<String> createToken(TokenRequest tokenReq) {
-		Customer customer = customerService.getByToken(tokenReq);
-		Token token = tokenService.generateToken(customer, tokenReq.getServices());
-		counterService.allocateCounter(token);
+	public ResponseEntity<String> issueToken(TokenRequest tokenReq) {
 
-		tokenService.saveOrUpdate(token);
-		return ResponseEntity.status(HttpStatus.OK).body("Token number assigned:" + token.getNumber());
+		Customer customer = customerService.getByToken(tokenReq);
+		Token token = tokenService.issueToken(customer, tokenReq.getServices());
+
+		return ResponseEntity.status(HttpStatus.CREATED).body("Token number assigned:" + token.getNumber());
 	}
 
 	@Override

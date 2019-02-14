@@ -16,6 +16,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.util.CollectionUtils;
+
 /**
  * @author sunainag
  * 
@@ -63,6 +65,7 @@ public class Token {
 	public Token(int number, Customer cust) {
 		this.number = number;
 		this.customer = cust;
+		this.created=new Date();
 	}
 
 	public int getNumber() {
@@ -120,5 +123,5 @@ public class Token {
 	public void setCreated(Date created) {
 		this.created = created;
 	}
-
+	
 }

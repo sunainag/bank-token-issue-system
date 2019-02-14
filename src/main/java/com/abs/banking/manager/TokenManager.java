@@ -20,7 +20,7 @@ public interface TokenManager {
 	 * @param tokenRequest Payload sent in the request for token creation
 	 * @return Response with details of the token created
 	 */
-	ResponseEntity<String> createToken(TokenRequest tokenRequest);
+	ResponseEntity<String> issueToken(TokenRequest tokenRequest);
 
 	/**
 	 * @param number Token number alloted to the customer(@see Customer)

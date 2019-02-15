@@ -27,13 +27,13 @@ public class CounterManagerImpl implements CounterManager {
 	TokenService tokenService;
 
 	@Autowired
+	TokenQueueService tokenQueueService;
+
+	@Autowired
 	CounterService counterService;
 
 	@Autowired
 	CounterAllocator counterAllocator;
-
-	@Autowired
-	TokenQueueService tokenQueueService;
 
 	@Override
 	public List<Counter> getAllCounters() {
@@ -54,16 +54,9 @@ public class CounterManagerImpl implements CounterManager {
 	}
 
 	@Override
-	public void updateTokenStatusById(Integer tokenNumber, StatusCode newTokenStatus) {
-		Token token = getToken(tokenNumber);
-		
-		tokenQueueService.pollNextInQueueWithStatus(newTokenStatus);
-
-		tokenService.updateStatus(token, newTokenStatus);
-	}
-
-	private Token getToken(Integer tokenNumber) {
-		return tokenService.getTokenByNumber(tokenNumber);
+	public void updateTokenStatusById(Integer counterNumber, StatusCode newTokenStatus) {
+		Counter counter = counterService.getCounter(counterNumber);
+		Token token = tokenQueueService.pollNextInQueueAndSetStatus(counter, newTokenStatus);
 	}
 
 }

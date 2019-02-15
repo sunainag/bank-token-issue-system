@@ -15,8 +15,6 @@ public interface TokenService {
 
 	List<Token> findByStatusCode(StatusCode statusCode);
 
-	void updateStatus(Token token, StatusCode statusCode);
-
 	Token getTokenByNumber(Integer tokenNumber);
 
 	boolean isTokenInvalid(Token token);

@@ -1,7 +1,6 @@
 package com.abs.banking.service;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +29,14 @@ public class TokenServiceImpl implements TokenService {
 
 	@Autowired
 	SequenceGenerator sequenceGenerator;
-	
+
 	@Autowired
 	TokenQueueService tokenQueueService;
 
 	@Override
 	public Token issueToken(Customer customer, List<String> services) {
 		Token token = generateTokenNumber(customer);
-		assignTokenServices(token,services);
+		assignTokenServices(token, services);
 		tokenQueueService.putInQueue(token);
 		return saveOrUpdate(token);
 	}
@@ -50,7 +49,7 @@ public class TokenServiceImpl implements TokenService {
 		else
 			throw new BusinessException(ErrorCode.INVALID_TOKEN);
 	}
-	
+
 	@Override
 	public void comment(Integer tokenNumber, String comments) {
 		Token token = getTokenByNumber(tokenNumber);
@@ -73,20 +72,14 @@ public class TokenServiceImpl implements TokenService {
 	}
 
 	@Override
-	public void updateStatus(Token token, StatusCode statusCode) {
-		token.setStatusCode(statusCode);
-		saveOrUpdate(token);
-	}
-
-	@Override
 	public boolean isTokenInvalid(Token token) {
 		return StatusCode.COMPLETED.equals(token.getStatusCode()) || StatusCode.CANCELLED.equals(token.getStatusCode());
 	}
-	
+
 	private Token generateTokenNumber(Customer customer) {
 		return new Token(sequenceGenerator.generate(), customer);
 	}
-	
+
 	private void assignTokenServices(Token token, List<String> services) {
 		List<TokenServiceMapping> tokenServicelist = getTokenServices(token, services);
 		token.setTokenServices(tokenServicelist);
@@ -113,7 +106,7 @@ public class TokenServiceImpl implements TokenService {
 	private Services findServiceByName(String name) {
 		return serviceRepo.findByName(name);
 	}
-	
+
 	private Token saveOrUpdate(Token token) {
 		return tokenRepo.save(token);
 	}

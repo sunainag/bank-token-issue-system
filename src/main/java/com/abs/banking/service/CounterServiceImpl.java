@@ -34,19 +34,7 @@ public class CounterServiceImpl implements CounterService {
 		return counterRepo.findByNumber(counterNum);
 	}
 
-	@Override
-	public synchronized Counter allocateCounter(Token token) {
-		Counter counter = counterAllocator.allocate(token.getCurrentService(), token.getCustomer());
-		token.setCurrentCounter(counter);
-		return alterQueueSize(counter.getId(), 1);
-	}
-
-	@Override
-	public Counter removeToken(Integer counterId) {
-		return alterQueueSize(counterId, -1);
-	}
-	
-	private Token assignNextService(Token token) {
+	public Token assignNextService(Token token) {
 		TokenServiceMapping nextService = null;
 		Iterator<TokenServiceMapping> i = token.getTokenServices().iterator();
 		while (i.hasNext()) {

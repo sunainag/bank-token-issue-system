@@ -51,7 +51,7 @@ public class CounterController {
 	}
 
 	@PutMapping(value = "counters/{counterNumber}/tokens/{tokenNumber}/complete")
-	public void completeToken(@PathVariable("tokenNumber") @NotNull Integer tokenNumber) {
-		counterManager.updateTokenStatusById(tokenNumber, StatusCode.COMPLETED);
+	public void completeToken(@PathVariable("counterNumber") @NotNull Integer counterNumber) {
+		counterManager.updateTokenStatusById(counterNumber, StatusCode.COMPLETED);
 	}
 }

@@ -14,8 +14,9 @@ import org.springframework.stereotype.Component;
 import com.abs.banking.exception.BusinessException;
 import com.abs.banking.model.Counter;
 import com.abs.banking.model.Customer;
-import com.abs.banking.model.Services;
 import com.abs.banking.model.ServiceCounterMapping;
+import com.abs.banking.model.Services;
+import com.abs.banking.model.Token;
 import com.abs.banking.repository.CounterRepository;
 import com.abs.banking.repository.ServiceCounterMappingRepo;
 
@@ -44,8 +45,8 @@ public class CustomerPriorityAndQueueBasedCounterAllocator implements CounterAll
 	}
 
 	@Override
-	public Counter allocate(Services service, Customer customer) {
-		List<Counter> counters = getServiceCountersBasedOnCustomerPriority(service, customer);
+	public Counter allocate(Token token) {
+		List<Counter> counters = getServiceCountersBasedOnCustomerPriority(token.getCurrentService(), token.getCustomer());
 		if (!counters.isEmpty()) {
 			// Allocate counter with minimum queue size
 			int minQueueSize = Integer.MAX_VALUE;

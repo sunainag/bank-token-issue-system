@@ -16,8 +16,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.util.CollectionUtils;
-
 /**
  * @author sunainag
  * 
@@ -122,6 +120,10 @@ public class Token {
 
 	public void setCreated(Date created) {
 		this.created = created;
+	}
+	
+	public boolean isInactive() {
+		return StatusCode.CANCELLED.equals(this.statusCode) || StatusCode.COMPLETED.equals(this.statusCode);
 	}
 	
 }

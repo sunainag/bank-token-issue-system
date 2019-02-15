@@ -17,6 +17,6 @@ public interface CounterManager {
 
 	void setComments(@NotNull Integer tokenNumber, String comments);
 
-	void updateTokenStatusById(Integer tokenNumber, StatusCode tokenStatus);
+	void updateTokenStatusById(Integer counterNumber, StatusCode tokenStatus);
 
 }

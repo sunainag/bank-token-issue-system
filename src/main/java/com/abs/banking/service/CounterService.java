@@ -11,8 +11,6 @@ public interface CounterService {
 
 	Counter getCounter(Integer counterNumber);
 
-	Counter alterQueueSize(int counterId, int count);
-	
 	Token assignNextService(Token token);
 
 }

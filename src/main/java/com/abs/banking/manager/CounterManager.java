@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 
 import com.abs.banking.model.Counter;
+import com.abs.banking.model.Token;
 import com.abs.banking.model.Token.StatusCode;
 
 public interface CounterManager {
@@ -17,6 +18,8 @@ public interface CounterManager {
 
 	void setComments(@NotNull Integer tokenNumber, String comments);
 
-	void updateTokenStatusById(Integer counterNumber, StatusCode tokenStatus);
+	void updateTokenStatusById(Integer counterNumber, Integer tokenNumber, StatusCode tokenStatus);
+
+	Token getNextTokenFromQueue(Integer counterNumber);
 
 }

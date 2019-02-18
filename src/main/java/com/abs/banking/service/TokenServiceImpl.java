@@ -75,6 +75,11 @@ public class TokenServiceImpl implements TokenService {
 	public boolean isTokenInvalid(Token token) {
 		return StatusCode.COMPLETED.equals(token.getStatusCode()) || StatusCode.CANCELLED.equals(token.getStatusCode());
 	}
+	
+	@Override
+	public void save(Token token) {
+		tokenRepo.save(token);
+	}
 
 	private Token generateTokenNumber(Customer customer) {
 		return new Token(sequenceGenerator.generate(), customer);

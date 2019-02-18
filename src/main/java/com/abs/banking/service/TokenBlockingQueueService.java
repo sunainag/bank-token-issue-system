@@ -12,21 +12,24 @@ import com.abs.banking.exception.BusinessException;
 import com.abs.banking.model.Counter;
 import com.abs.banking.model.Token;
 import com.abs.banking.model.Token.StatusCode;
+import com.abs.banking.repository.TokenRepository;
 import com.abs.banking.util.counter.allocator.CounterAllocator;
 
 public class TokenBlockingQueueService implements TokenQueueService {
 
 	@Autowired
-	private CounterService counterService;
+	CounterAllocator counterAllocator;
 
 	@Autowired
-	CounterAllocator counterAllocator;
+	TokenRepository tokenRepo;
 
 	TokenQueueProducer producer;
 
+	//TODO: instead use a circularfifoqueue or Dequeue
 	BlockingQueue<Token> tokenQueue;
 
-	Map<Integer, PriorityBlockingQueue<Token>> counterWiseQueueMap;// map of counter numbers : queue of tokens
+	// map of counter numbers : queue of tokens
+	Map<Integer, PriorityBlockingQueue<Token>> counterWiseQueueMap;
 
 	@Override
 	public void putInQueue(Token token) {
@@ -39,26 +42,43 @@ public class TokenBlockingQueueService implements TokenQueueService {
 	}
 
 	@Override
-	public Token pollNextInQueueAndSetStatus(Counter counter, StatusCode newStatus) {
+	public Token pollNextInQueue(Counter counter) {
 		try {
-			// check if this token is alloted this counter and set status acc to the token
-			//TODO: also add the priority to premium customers logic
+			// check if this token is alloted this counter and set status acc to
+			// the token
+			// TODO: also add the priority to premium customers logic
 			if (counterWiseQueueMap.containsKey(counter.getNumber())) {
-				Token token = counterWiseQueueMap.get(counter.getNumber()).take();//reduced queue size too
-				if(token.getCurrentCounter()!=counter) {
+				Token token = counterWiseQueueMap.get(counter.getNumber()).take();// reduced
+																					// queue
+																					// size
+																					// too
+				if (token.getCounterNumber() != counter.getNumber()) {
 					throw new BusinessException(BusinessException.ErrorCode.INVALID_TOKEN);
-					//or token.setCurrentCounter(counter);
-				}else {
-					token.setStatusCode(newStatus);
-					return token;
+					// or token.setCurrentCounter(counter);
 				}
+				return token;
 			} else {
-				throw new BusinessException(BusinessException.ErrorCode.INVALID_COUNTER_ID);
+				throw new BusinessException(BusinessException.ErrorCode.TOKEN_NOT_ASSIGNED_TO_THIS_COUNTER);
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	@Override
+	public Counter addToNextQueue(Token token) {
+		try {
+			///already removed from previous queue
+			token.setStatusCode(StatusCode.IN_PROGRESS);
+			
+			//TODO:set highest priority
+			
+			addToTokenQueue(token);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return token.getCurrentCounter();
 	}
 
 	class TokenQueueProducer extends Thread {
@@ -74,7 +94,7 @@ public class TokenBlockingQueueService implements TokenQueueService {
 	}
 
 	private void initialize() {
-		if (tokenQueue == null) {
+		if (counterWiseQueueMap == null) {
 			tokenQueue = new LinkedBlockingQueue<>();
 			counterWiseQueueMap = new ConcurrentHashMap<>();
 			TokenQueueProducer producer = new TokenQueueProducer();
@@ -82,19 +102,10 @@ public class TokenBlockingQueueService implements TokenQueueService {
 
 		}
 	}
-
-	private void resolveToken(Token token) {
-		if (StatusCode.COMPLETED.equals(token.getStatusCode())) {
-			token = counterService.assignNextService(token);
-			if (token.getCurrentService()!=null) {
-				token.setCurrentCounter(counterAllocator.allocate(token));
-			}
-		}
-	}
-
+	
 	private Counter addToTokenQueue(Token token) throws InterruptedException {
-		if (token.getCurrentCounter() != null || token.isInactive()) {
-			// log info - token is already added to queue or inappropriate token status
+		if (token.isInactive()) {
+			// log info - inappropriate token state
 			return null;
 		}
 
@@ -106,7 +117,12 @@ public class TokenBlockingQueueService implements TokenQueueService {
 		}
 		counterQueue.put(token);
 		counterWiseQueueMap.put(counter.getNumber(), counterQueue);
+		saveTokenState(token);
 		return counter;
+	}
+
+	private void saveTokenState(Token token) {
+		tokenRepo.saveAndFlush(token);
 	}
 
 }

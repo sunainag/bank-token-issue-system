@@ -20,5 +20,7 @@ public interface TokenService {
 	boolean isTokenInvalid(Token token);
 
 	void comment(Integer tokenNumber, String comments);
-
+	
+	void save(Token token);
+	
 }

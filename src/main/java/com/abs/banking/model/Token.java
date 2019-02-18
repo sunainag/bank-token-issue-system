@@ -24,10 +24,10 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "token")
-public class Token {
+public class Token{
 
 	public enum StatusCode {
-		ACTIVE, CANCELLED, COMPLETED
+		ACTIVE, CANCELLED, COMPLETED, IN_PROGRESS
 	}
 
 	@Id
@@ -126,4 +126,7 @@ public class Token {
 		return StatusCode.CANCELLED.equals(this.statusCode) || StatusCode.COMPLETED.equals(this.statusCode);
 	}
 	
+	public Integer getCounterNumber(){
+		return this.getCurrentCounter().getNumber();
+	}
 }

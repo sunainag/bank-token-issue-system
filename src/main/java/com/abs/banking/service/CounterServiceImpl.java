@@ -33,7 +33,8 @@ public class CounterServiceImpl implements CounterService {
 	public Counter getCounter(Integer counterNum) {
 		return counterRepo.findByNumber(counterNum);
 	}
-
+	
+	@Override
 	public Token assignNextService(Token token) {
 		TokenServiceMapping nextService = null;
 		Iterator<TokenServiceMapping> i = token.getTokenServices().iterator();
@@ -42,19 +43,10 @@ public class CounterServiceImpl implements CounterService {
 			if (tsm.getService().getId() == token.getCurrentService().getId() && i.hasNext()) {
 				nextService = i.next();
 				token.setCurrentService(nextService.getService());
+			}else{
+				token.setCurrentService(null);
 			}
 		}
 		return token;
 	}
-
-	public synchronized Counter alterQueueSize(int counterId, int count) {
-		Counter counter = counterRepo.findById(counterId).get();
-		counter.setQueueSize(counter.getQueueSize() + count);
-		return saveCounter(counter);
-	}
-
-	private synchronized Counter saveCounter(Counter counter) {
-		return counterRepo.save(counter);
-	}
-
 }

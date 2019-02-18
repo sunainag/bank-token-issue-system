@@ -36,6 +36,11 @@ public class CounterManagerImpl implements CounterManager {
 	CounterAllocator counterAllocator;
 
 	@Override
+	public Token getNextTokenFromQueue(Integer counterNumber) {
+		return tokenQueueService.pollNextInQueue(counterService.getCounter(counterNumber));
+	}
+
+	@Override
 	public List<Counter> getAllCounters() {
 		return counterService.getAllCounters();
 	}
@@ -54,9 +59,31 @@ public class CounterManagerImpl implements CounterManager {
 	}
 
 	@Override
-	public void updateTokenStatusById(Integer counterNumber, StatusCode newTokenStatus) {
-		Counter counter = counterService.getCounter(counterNumber);
-		Token token = tokenQueueService.pollNextInQueueAndSetStatus(counter, newTokenStatus);
+	public void updateTokenStatusById(Integer counterNumber, Integer tokenNumber, StatusCode newTokenStatus) {
+		if (validateCounterForToken(counterNumber, tokenNumber))
+			resolveToken(tokenNumber, newTokenStatus);
+	}
+	
+	private void resolveToken(Integer tokenNumber, StatusCode newTokenStatus) {
+		Token token = getToken(tokenNumber);
+		if (StatusCode.COMPLETED.equals(newTokenStatus)) {
+			token = counterService.assignNextService(token);
+			if (token.getCurrentService() != null) {
+				tokenQueueService.addToNextQueue(token);
+			}
+		}
+		else{
+			token.setStatusCode(newTokenStatus);
+		}
+		tokenService.save(token);
+	}
+
+	private boolean validateCounterForToken(Integer counterNumber, Integer tokenNumber) {
+		return getToken(tokenNumber).getCounterNumber().equals(counterNumber);
+	}
+
+	private Token getToken(Integer tokenNumber) {
+		return tokenService.getTokenByNumber(tokenNumber);
 	}
 
 }

@@ -25,6 +25,12 @@ public class CounterController {
 
 	@Autowired
 	private CounterManager counterManager;
+	
+	@GetMapping(value = "/counters/{counterNumber}/token")
+	public Token getNextTokenInQueue(@PathVariable("counterNumber") Integer counterNumber) {
+		return counterManager.getNextTokenFromQueue(counterNumber);
+	}
+
 
 	/**
 	 * @return Counter details like counter number, queueSize and priority
@@ -39,19 +45,19 @@ public class CounterController {
 		return counterManager.getCounter(counterNum);
 	}
 
-	@PatchMapping(value = "counters/{counterNumber}/tokens/{tokenNumber}/comment")
+	@PatchMapping(value = "/counters/{counterNumber}/tokens/{tokenNumber}/comment")
 	public void commentOnToken(@PathVariable("tokenNumber") @NotNull Integer tokenNumber,
 			@RequestBody String comments) {
 		counterManager.setComments(tokenNumber, comments);
 	}
 
-	@PutMapping(value = "counters/{counterNumber}/tokens/{tokenNumber}/cancel")
+	@PutMapping(value = "/counters/{counterNumber}/tokens/{tokenNumber}/cancel")
 	public void cancelToken(@PathVariable("tokenNumber") @NotNull Integer tokenNumber) {
-		counterManager.updateTokenStatusById(tokenNumber, Token.StatusCode.CANCELLED);
+		counterManager.updateTokenStatusById(tokenNumber,tokenNumber, Token.StatusCode.CANCELLED);
 	}
 
 	@PutMapping(value = "counters/{counterNumber}/tokens/{tokenNumber}/complete")
-	public void completeToken(@PathVariable("counterNumber") @NotNull Integer counterNumber) {
-		counterManager.updateTokenStatusById(counterNumber, StatusCode.COMPLETED);
+	public void completeToken(@PathVariable("counterNumber") Integer counterNumber, @PathVariable("tokenNumber") Integer tokenNumber) {
+		counterManager.updateTokenStatusById(counterNumber, tokenNumber, StatusCode.COMPLETED);
 	}
 }

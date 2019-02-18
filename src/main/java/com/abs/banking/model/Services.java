@@ -21,7 +21,7 @@ import javax.validation.constraints.NotNull;
 public class Services {
 
 	public enum ServicesType {
-		PREMIUM, REGULAR
+		PREMIUM, REGULAR, URGENT
 	}
 
 	@Id

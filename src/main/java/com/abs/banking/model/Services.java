@@ -20,8 +20,14 @@ import javax.validation.constraints.NotNull;
 @Table(name = "service")
 public class Services {
 
+	/**
+	 * Here the sequence of defining the servicesType is of utmost significance; as
+	 * the ordinal of the enum values is being used to compare the priority of the
+	 * token @see class TokenPriorityComparator.
+	 *
+	 */
 	public enum ServicesType {
-		PREMIUM, REGULAR, URGENT
+		REGULAR, PREMIUM, URGENT
 	}
 
 	@Id
@@ -42,12 +48,12 @@ public class Services {
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "service_counter_mapping", joinColumns = @JoinColumn(name = "service_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "counter_id", referencedColumnName = "id"))
 	private List<Counter> counters;
-	
+
 	private Services(ServicesBuilder builder) {
-		this.name=builder.name;
-		this.type=builder.type;
-		this.nextServiceId=builder.nextServiceId;
-		this.counters=builder.counters;
+		this.name = builder.name;
+		this.type = builder.type;
+		this.nextServiceId = builder.nextServiceId;
+		this.counters = builder.counters;
 	}
 
 	public long getId() {
@@ -70,28 +76,32 @@ public class Services {
 		return counters;
 	}
 
-	public static class ServicesBuilder{
-		
+	public void setType(ServicesType type) {
+		this.type=type;
+	}
+	
+	public static class ServicesBuilder {
+
 		private String name;
 		private ServicesType type;
 		private Long nextServiceId;
 		private List<Counter> counters;
-		
+
 		public ServicesBuilder(String name, ServicesType type) {
-			this.name=name;
-			this.type=type;
+			this.name = name;
+			this.type = type;
 		}
-		
+
 		public ServicesBuilder nextService(Long nextServiceId) {
-			this.nextServiceId=nextServiceId;
+			this.nextServiceId = nextServiceId;
 			return this;
 		}
-		
+
 		public ServicesBuilder counters(List<Counter> counters) {
-			this.counters=counters;
+			this.counters = counters;
 			return this;
 		}
-		
+
 		public Services build() {
 			return new Services(this);
 		}

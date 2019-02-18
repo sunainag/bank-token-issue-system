@@ -24,7 +24,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "token")
-public class Token{
+public class Token {
 
 	public enum StatusCode {
 		ACTIVE, CANCELLED, COMPLETED, IN_PROGRESS
@@ -63,7 +63,7 @@ public class Token{
 	public Token(int number, Customer cust) {
 		this.number = number;
 		this.customer = cust;
-		this.created=new Date();
+		this.created = new Date();
 	}
 
 	public int getNumber() {
@@ -121,12 +121,13 @@ public class Token{
 	public void setCreated(Date created) {
 		this.created = created;
 	}
-	
+
 	public boolean isInactive() {
 		return StatusCode.CANCELLED.equals(this.statusCode) || StatusCode.COMPLETED.equals(this.statusCode);
 	}
-	
-	public Integer getCounterNumber(){
+
+	public Integer getCounterNumber() {
 		return this.getCurrentCounter().getNumber();
 	}
+
 }

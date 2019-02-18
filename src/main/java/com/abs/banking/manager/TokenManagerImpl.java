@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 
 import com.abs.banking.dto.TokenRequest;
 import com.abs.banking.model.Customer;
@@ -15,6 +16,7 @@ import com.abs.banking.service.CounterService;
 import com.abs.banking.service.CustomerService;
 import com.abs.banking.service.TokenService;
 
+@Component
 public class TokenManagerImpl implements TokenManager {
 
 	@Autowired

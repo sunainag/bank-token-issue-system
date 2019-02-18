@@ -7,15 +7,17 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.abs.banking.exception.BusinessException;
 import com.abs.banking.model.Counter;
-import com.abs.banking.model.Token;
 import com.abs.banking.model.Services.ServicesType;
+import com.abs.banking.model.Token;
 import com.abs.banking.model.Token.StatusCode;
 import com.abs.banking.repository.TokenRepository;
 import com.abs.banking.util.counter.allocator.CounterAllocator;
 
+@Service
 public class TokenBlockingQueueService implements TokenQueueService {
 
 	@Autowired

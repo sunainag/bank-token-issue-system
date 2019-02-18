@@ -30,7 +30,11 @@ public class Counter {
 	@Column(name = "queue_size")
 	private int queueSize;
 
+	public Counter() {
+	}
+	
 	private Counter(CounterBuilder builder) {
+		this();
 		this.number=builder.number;
 		this.priority=builder.priority;
 		this.queueSize=builder.queueSize;

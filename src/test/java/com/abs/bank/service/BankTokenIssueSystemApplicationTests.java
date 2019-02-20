@@ -1,25 +1,19 @@
 package com.abs.bank.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-import com.abs.banking.AbsBankingApplication;
 import com.abs.banking.dto.TokenRequest;
 import com.abs.banking.model.Address;
 import com.abs.banking.model.Counter;
@@ -31,43 +25,42 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = AbsBankingApplication.class)
-@WebAppConfiguration
-public class BankTokenIssueSystemApplicationTests {
+public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 
-	protected MockMvc mvc;
-	@Autowired
-	WebApplicationContext webApplicationContext;
+	String uri = "/abs/bank/tokens";
 
-	protected void setUp() {
-		mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+	@Override
+	@Before
+	public void setUp() {
+		super.setUp();
 	}
 
-	protected String mapToJson(TokenRequest obj) throws JsonProcessingException {
-		ObjectMapper objectMapper = new ObjectMapper();
-		return objectMapper.writeValueAsString(obj);
-	}
+	// GET API test case
+	@Test
+	public void getActiveTokens() {
+		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri).accept(MediaType.APPLICATION_JSON_VALUE))
+				.andReturn();
 
-	protected <T> T mapFromJson(String json, Class<T> clazz)
-			throws JsonParseException, JsonMappingException, IOException {
-
-		ObjectMapper objectMapper = new ObjectMapper();
-		return objectMapper.readValue(json, clazz);
+		int status = mvcResult.getResponse().getStatus();
+		assertEquals(200, status);
+		String content = mvcResult.getResponse().getContentAsString();
+		Map<Integer, List<Integer>> activeTokensPerCounter = super.mapFromJson(content, Map.class);
+		System.out.println(activeTokensPerCounter);
+		assertTrue(activeTokensPerCounter.get(1), 1);
 	}
 
 	// POST API test case
 	@Test
 	public void issueToken() throws Exception {
-		String uri = "/abs/bank/tokens";
+
 		Customer customer = new Customer();
-		customer.setId(3);
 		customer.setMobile("1234");
 		customer.setName("Test Post API");
 		customer.setType(CustomerType.REGULAR);
-		customer.setAddress(new Address());
+		customer.setAddress(createAddress());
 
-		//Services services = new Services.ServicesBuilder(servicename, ServicesType.REGULAR).counters(counters).build();
+		// Services services = new Services.ServicesBuilder(servicename,
+		// ServicesType.REGULAR).counters(counters).build();
 
 		String servicename = "A";
 		List<String> service = new ArrayList<String>();
@@ -86,6 +79,17 @@ public class BankTokenIssueSystemApplicationTests {
 		assertEquals(201, status);
 		String content = mvcResult.getResponse().getContentAsString();
 		assertEquals(content, "Token number assigned:1");
+	}
+
+	private Address createAddress() {
+		Address address = new Address();
+		address.setAddressLine1("one");
+		address.setAddressLine2("two");
+		address.setCity("city");
+		address.setState("state");
+		address.setCountry("country");
+		address.setZipCode("1232");
+		return address;
 	}
 
 	private List<Counter> createListOfCounters() {

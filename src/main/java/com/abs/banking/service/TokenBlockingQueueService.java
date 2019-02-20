@@ -115,10 +115,10 @@ public class TokenBlockingQueueService implements TokenQueueService {
 	}
 
 	private void initialize() {
-		if (counterWiseQueueMap == null) {
+		if (counterWiseQueueMap == null || producer==null) {
 			tokenQueue = new ConcurrentLinkedDeque<>();
 			counterWiseQueueMap = new ConcurrentHashMap<>();
-			TokenQueueProducer producer = new TokenQueueProducer();
+			producer = new TokenQueueProducer();
 			producer.start();
 
 		}

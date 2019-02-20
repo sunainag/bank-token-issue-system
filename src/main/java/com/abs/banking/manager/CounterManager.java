@@ -18,7 +18,7 @@ public interface CounterManager {
 
 	void setComments(@NotNull Integer tokenNumber, String comments);
 
-	void updateTokenStatusById(Integer counterNumber, Integer tokenNumber, StatusCode tokenStatus);
+	ResponseEntity<Integer> updateTokenStatusById(Integer counterNumber, Integer tokenNumber, StatusCode tokenStatus);
 
 	Token getNextTokenFromQueue(Integer counterNumber);
 

@@ -48,7 +48,7 @@ public class CustomerPriorityAndQueueBasedCounterAllocator implements CounterAll
 	public Counter allocate(Token token) {
 		List<Counter> counters = getServiceCountersBasedOnCustomerPriority(token.getCurrentService(),
 				token.getCustomer());
-		if (!counters.isEmpty()) {
+		if (counters!=null && !counters.isEmpty()) {
 			// Allocate counter with minimum queue size
 			int minQueueSize = Integer.MAX_VALUE;
 			Counter allocatedCounter = null;

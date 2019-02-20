@@ -59,9 +59,12 @@ public class CounterManagerImpl implements CounterManager {
 	}
 
 	@Override
-	public void updateTokenStatusById(Integer counterNumber, Integer tokenNumber, StatusCode newTokenStatus) {
-		if (validateCounterForToken(counterNumber, tokenNumber))
+	public ResponseEntity<Integer> updateTokenStatusById(Integer counterNumber, Integer tokenNumber, StatusCode newTokenStatus) {
+		if (validateCounterForToken(counterNumber, tokenNumber)) {
 			resolveToken(tokenNumber, newTokenStatus);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(tokenNumber);
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(tokenNumber);
 	}
 
 	private void resolveToken(Integer tokenNumber, StatusCode newTokenStatus) {

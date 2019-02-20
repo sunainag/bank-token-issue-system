@@ -3,7 +3,6 @@ package com.abs.bank.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,25 +19,29 @@ import com.abs.banking.model.Counter;
 import com.abs.banking.model.Counter.Priority;
 import com.abs.banking.model.Customer;
 import com.abs.banking.model.Customer.CustomerType;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.abs.banking.model.Token;
 
 public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 
-	String uri = "/abs/bank/tokens";
+	private static final String uri = "/abs/bank";
+	private static final String tokenUri = "/tokens";
+	private static final String counterUri = "/counters";
+
+	private int counterNumber;
+	private int tokenNumber;
 
 	@Override
 	@Before
 	public void setUp() {
 		super.setUp();
+		counterNumber = getCounterNumber();
 	}
 
 	// GET API test case
 	@Test
 	public void getActiveTokens() throws Exception {
-		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri).accept(MediaType.APPLICATION_JSON_VALUE))
+		MvcResult mvcResult = mvc
+				.perform(MockMvcRequestBuilders.get(uri + tokenUri).accept(MediaType.APPLICATION_JSON_VALUE))
 				.andReturn();
 
 		int status = mvcResult.getResponse().getStatus();
@@ -46,40 +49,78 @@ public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 		String content = mvcResult.getResponse().getContentAsString();
 		Map<Integer, List<Integer>> activeTokensPerCounter = super.mapFromJson(content, Map.class);
 		System.out.println(activeTokensPerCounter);
-		if(activeTokensPerCounter.get(1) != null)
-		assertTrue(activeTokensPerCounter.get(1).get(0).intValue()==1);
+		if (activeTokensPerCounter.get(1) != null)
+			assertTrue(activeTokensPerCounter.get(1).get(0).intValue() == 1);
 	}
 
 	// POST API test case
-	//@Test
+	@Test
 	public void issueToken() throws Exception {
 
-		Customer customer = new Customer();
-		customer.setMobile("1234");
-		customer.setName("Test Post API");
-		customer.setType(CustomerType.REGULAR);
-		customer.setAddress(createAddress());
-
-		// Services services = new Services.ServicesBuilder(servicename,
-		// ServicesType.REGULAR).counters(counters).build();
-
-		String servicename = "A";
+		String servicename = "C";
 		List<String> service = new ArrayList<String>();
 		service.add(0, servicename);
 
 		TokenRequest tokenReq = new TokenRequest();
-		tokenReq.setCustomer(customer);
+		tokenReq.setCustomer(createCustomer());
 		tokenReq.setServices(service);
 
 		String inputJson = mapToJson(tokenReq);
-		MvcResult mvcResult = mvc.perform(
-				MockMvcRequestBuilders.post(uri).contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson))
-				.andReturn();
+		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri + tokenUri)
+				.contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
 
 		int status = mvcResult.getResponse().getStatus();
 		assertEquals(201, status);
 		String content = mvcResult.getResponse().getContentAsString();
 		assertEquals(content, "Token number assigned:1");
+	}
+
+	// GET API test case
+	@Test
+	public void getNextTokenInQueue() throws Exception {
+		int counterNumber = this.counterNumber;
+		String getTokenUri = "/" + counterNumber + "/token";
+		MvcResult mvcResult = mvc.perform(
+				MockMvcRequestBuilders.get(uri + counterUri + getTokenUri).accept(MediaType.APPLICATION_JSON_VALUE))
+				.andReturn();
+
+		int status = mvcResult.getResponse().getStatus();
+		assertEquals(200, status);
+		String content = mvcResult.getResponse().getContentAsString();
+		Token tokenServed = super.mapFromJson(content, Token.class);
+		if (tokenServed != null) {
+			assertEquals(tokenServed.getCounterNumber().toString(), String.valueOf(counterNumber));
+			this.tokenNumber=tokenServed.getNumber();
+		}
+	}
+
+	// PUT API test case
+	@Test
+	public void completeToken() throws Exception {
+		int counterNumber = this.counterNumber;
+		int tokenNumber = this.tokenNumber!=0?this.tokenNumber:1;
+		String putUri = "/" + counterNumber + "/tokens/"+tokenNumber+"/complete";
+		Product product = new Product();
+		product.setName("Lemon");
+
+		String inputJson = super.mapToJson(product);
+		MvcResult mvcResult = mvc.perform(
+				MockMvcRequestBuilders.put(uri+counterUri+putUri).contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson))
+				.andReturn();
+
+		int status = mvcResult.getResponse().getStatus();
+		assertEquals(200, status);
+		String content = mvcResult.getResponse().getContentAsString();
+		assertEquals(content, "Product is updated successsfully");
+	}
+	
+	private Customer createCustomer() {
+		Customer customer = new Customer();
+		customer.setMobile("99994");
+		customer.setName("Test Post API2");
+		customer.setType(CustomerType.PREMIUM);
+		customer.setAddress(createAddress());
+		return customer;
 	}
 
 	private Address createAddress() {
@@ -91,6 +132,10 @@ public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 		address.setCountry("country");
 		address.setZipCode("1232");
 		return address;
+	}
+
+	private int getCounterNumber() {
+		return 3;
 	}
 
 	private List<Counter> createListOfCounters() {

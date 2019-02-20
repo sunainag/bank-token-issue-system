@@ -79,7 +79,7 @@ public class CounterManagerImpl implements CounterManager {
 	}
 
 	private boolean validateCounterForToken(Integer counterNumber, Integer tokenNumber) {
-		return getToken(tokenNumber).getCounterNumber().equals(counterNumber);
+		return counterNumber.equals(getToken(tokenNumber).getCounterNumber());
 	}
 
 	private Token getToken(Integer tokenNumber) {

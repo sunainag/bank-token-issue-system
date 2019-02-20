@@ -60,6 +60,10 @@ public class Token {
 	@NotNull
 	private Date created;
 
+	public Token() {
+		super();
+	}
+
 	public Token(int number, Customer cust) {
 		this.number = number;
 		this.customer = cust;
@@ -127,7 +131,10 @@ public class Token {
 	}
 
 	public Integer getCounterNumber() {
-		return this.getCurrentCounter().getNumber();
+		if (this.getCurrentCounter() != null)
+			return this.getCurrentCounter().getNumber();
+		else
+			return new Integer(0);
 	}
 
 }

@@ -45,7 +45,7 @@ public class CustomerServiceImpl implements CustomerService {
 			throw new BusinessException(ErrorCode.CUSTOMER_NOT_FOUND);
 		Customer customer = findByMobile(tokenReq.getCustomer().getMobile());
 		if (customer == null) {
-			create(tokenReq.getCustomer());
+			customer = create(tokenReq.getCustomer());
 		}
 		return customer;
 	}

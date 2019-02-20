@@ -55,31 +55,34 @@ public class TokenBlockingQueueService implements TokenQueueService {
 					throw new BusinessException(BusinessException.ErrorCode.INVALID_TOKEN);
 					// or token.setCurrentCounter(counter);
 				}
-				
+
 				return token;
-			} else {
+			}
+			else {
 				throw new BusinessException(BusinessException.ErrorCode.TOKEN_NOT_ASSIGNED_TO_THIS_COUNTER);
 			}
-		} catch (InterruptedException e) {
+		}
+		catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
+
 	@Override
 	public Counter addToNextQueue(Token token) {
 		try {
 			//already removed from previous queue
 			token.setStatusCode(StatusCode.IN_PROGRESS);
-			
+
 			//TODO:set highest priority
 			token.getCurrentService().setType(ServicesType.URGENT);
-			
+
 			//add to the head of the token queue
 			tokenQueue.offerFirst(token);
-			
+
 			addToTokenQueue(token);
-		} catch (InterruptedException e) {
+		}
+		catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		return token.getCurrentCounter();
@@ -91,7 +94,8 @@ public class TokenBlockingQueueService implements TokenQueueService {
 			try {
 				Token token = tokenQueue.poll();
 				addToTokenQueue(token);
-			} catch (InterruptedException e) {
+			}
+			catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
@@ -101,15 +105,15 @@ public class TokenBlockingQueueService implements TokenQueueService {
 	 * Comparator to decide the sequence in which the token is to be served first in the queue
 	 *
 	 */
-	class TokenPriorityComparator implements Comparator<Token>{
+	class TokenPriorityComparator implements Comparator<Token> {
 
 		@Override
 		public int compare(Token t1, Token t2) {
-			return t1.getCurrentService().getType().ordinal()-t2.getCurrentService().getType().ordinal();
+			return t1.getCurrentService().getType().ordinal() - t2.getCurrentService().getType().ordinal();
 		}
-		
+
 	}
-	
+
 	private void initialize() {
 		if (counterWiseQueueMap == null) {
 			tokenQueue = new ConcurrentLinkedDeque<>();
@@ -119,7 +123,7 @@ public class TokenBlockingQueueService implements TokenQueueService {
 
 		}
 	}
-	
+
 	private Counter addToTokenQueue(Token token) throws InterruptedException {
 		if (token.isInactive()) {
 			// log info - inappropriate token state
@@ -130,7 +134,7 @@ public class TokenBlockingQueueService implements TokenQueueService {
 		token.setCurrentCounter(counter);
 		PriorityBlockingQueue<Token> counterQueue = counterWiseQueueMap.get(counter.getNumber());
 		if (counterQueue == null) {
-			counterQueue = new PriorityBlockingQueue<>(11,new TokenPriorityComparator());
+			counterQueue = new PriorityBlockingQueue<>(11, new TokenPriorityComparator());
 		}
 		counterQueue.put(token);
 		counterWiseQueueMap.put(counter.getNumber(), counterQueue);

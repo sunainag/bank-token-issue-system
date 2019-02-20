@@ -52,7 +52,7 @@ public class Customer {
 	// Allows dd/MM/yyyy date to be passed into GET request in JSON
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date created;
-	
+
 	public Customer() {
 		this.created = new Date();
 	}

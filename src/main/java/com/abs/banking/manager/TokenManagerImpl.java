@@ -45,9 +45,8 @@ public class TokenManagerImpl implements TokenManager {
 	@Override
 	public Map<Integer, List<Integer>> getActiveTokens() {
 		List<Token> activeTokens = tokenService.findByStatusCode(Token.StatusCode.ACTIVE);
-		Map<Integer, List<Integer>> counterToTokens = activeTokens.stream()
-				.collect(Collectors.groupingBy(t -> Integer.valueOf(t.getCounterNumber()),
-						Collectors.mapping(Token::getNumber, Collectors.toList())));
+		Map<Integer, List<Integer>> counterToTokens = activeTokens.stream().collect(Collectors.groupingBy(
+				t -> Integer.valueOf(t.getCounterNumber()), Collectors.mapping(Token::getNumber, Collectors.toList())));
 		return counterToTokens;
 	}
 

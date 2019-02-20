@@ -38,9 +38,9 @@ public class Address {
 	private Date created;
 
 	public Address() {
-		this.created=new Date();
+		this.created = new Date();
 	}
-	
+
 	public long getId() {
 		return id;
 	}

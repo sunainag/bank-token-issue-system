@@ -33,7 +33,7 @@ public class CounterServiceImpl implements CounterService {
 	public Counter getCounter(Integer counterNum) {
 		return counterRepo.findByNumber(counterNum);
 	}
-	
+
 	@Override
 	public Token assignNextService(Token token) {
 		TokenServiceMapping nextService = null;
@@ -43,7 +43,8 @@ public class CounterServiceImpl implements CounterService {
 			if (tsm.getService().getId() == token.getCurrentService().getId() && i.hasNext()) {
 				nextService = i.next();
 				token.setCurrentService(nextService.getService());
-			}else{
+			}
+			else {
 				token.setCurrentService(null);
 			}
 		}

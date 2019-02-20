@@ -32,12 +32,12 @@ public class Counter {
 
 	public Counter() {
 	}
-	
+
 	private Counter(CounterBuilder builder) {
 		this();
-		this.number=builder.number;
-		this.priority=builder.priority;
-		this.queueSize=builder.queueSize;
+		this.number = builder.number;
+		this.priority = builder.priority;
+		this.queueSize = builder.queueSize;
 	}
 
 	public Integer getId() {
@@ -72,7 +72,7 @@ public class Counter {
 		private int queueSize;
 
 		public CounterBuilder(int number) {
-			this.number=number;
+			this.number = number;
 		}
 
 		public CounterBuilder priority(Priority priority) {

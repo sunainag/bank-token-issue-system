@@ -63,7 +63,7 @@ public class CounterManagerImpl implements CounterManager {
 		if (validateCounterForToken(counterNumber, tokenNumber))
 			resolveToken(tokenNumber, newTokenStatus);
 	}
-	
+
 	private void resolveToken(Integer tokenNumber, StatusCode newTokenStatus) {
 		Token token = getToken(tokenNumber);
 		if (StatusCode.COMPLETED.equals(newTokenStatus)) {
@@ -72,7 +72,7 @@ public class CounterManagerImpl implements CounterManager {
 				tokenQueueService.addToNextQueue(token);
 			}
 		}
-		else{
+		else {
 			token.setStatusCode(newTokenStatus);
 		}
 		tokenService.save(token);

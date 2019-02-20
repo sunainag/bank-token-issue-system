@@ -34,7 +34,7 @@ public class TokenController {
 	public Map<Integer, List<Integer>> activeTokens() {
 		return tokenManager.getActiveTokens();
 	}
-	
+
 	@GetMapping(value = "/tokens/{tokenNumber}")
 	public @ResponseBody Token getToken(@PathVariable("tokenNumber") @NotNull Integer tokenNumber) {
 		return tokenManager.getToken(tokenNumber);

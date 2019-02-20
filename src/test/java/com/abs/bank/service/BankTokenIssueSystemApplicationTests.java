@@ -88,7 +88,7 @@ public class BankTokenIssueSystemApplicationTests {
 		assertEquals(content, "Token number assigned:1");
 	}
 
-	private List<Counter>  createListOfCounters() {
+	private List<Counter> createListOfCounters() {
 		Counter c1 = new Counter.CounterBuilder(1).priority(Priority.NORMAL).queueSize(0).build();
 		Counter c2 = new Counter.CounterBuilder(2).priority(Priority.NORMAL).queueSize(0).build();
 		Counter c3 = new Counter.CounterBuilder(3).priority(Priority.HIGH).queueSize(0).build();
@@ -99,7 +99,7 @@ public class BankTokenIssueSystemApplicationTests {
 		counters.add(c2);
 		counters.add(c3);
 		counters.add(c4);
-		
+
 		return counters;
 	}
 

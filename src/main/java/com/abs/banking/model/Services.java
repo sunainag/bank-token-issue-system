@@ -48,7 +48,7 @@ public class Services {
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "service_counter_mapping", joinColumns = @JoinColumn(name = "service_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "counter_id", referencedColumnName = "id"))
 	private List<Counter> counters;
-	
+
 	public Services() {
 	}
 
@@ -81,9 +81,9 @@ public class Services {
 	}
 
 	public void setType(ServicesType type) {
-		this.type=type;
+		this.type = type;
 	}
-	
+
 	public static class ServicesBuilder {
 
 		private String name;

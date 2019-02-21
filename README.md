@@ -14,7 +14,7 @@ Open the application.properties file and set the MySQL configuration.
 
 **Schema installation:**
 
-Run the file install_schema.sql present in src/main/resources to set up the database. 
+Run the file import.sql present in src/main/resources to set up the database. 
 
 Following tables would be created:
 
@@ -67,23 +67,24 @@ POST: http://localhost:8080/abs/bank/tokens
 Request Body: 
 
           {
-            "services":["CASH_DEPOSIT","ACCOUNT_OPENING"],
+            "services":["C"],
             "customer":{
-                        "name":"abc",
-                        "mobile":"123",
+				"id":0,
+                        "name":"aaass",
+                        "mobile":"1343434",
                         "type":"REGULAR",
                         "address":{
-                          "addressLine1":"addressLine1",
-                          "addressLine2":"addressLine2",
-                          "city":"city",
-                          "state":"state",
-                          "country":"country",
-                          "zipCode":"zipCode",
-                          "created":"13/02/2019"
+				  "id":0,
+                          "addressLine1":"addressLine12",
+                          "addressLine2":"addressLine23",
+                          "city":"city1",
+                          "state":"state1",
+                          "country":"country1",
+                          "zipCode":"zipCode1",
+                          "created":"14/02/2019"
                         }
             }
           }
-
 
 **CounterController:**
 

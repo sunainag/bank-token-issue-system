@@ -36,10 +36,10 @@ public class CustomerPriorityAndQueueBasedCounterAllocator implements CounterAll
 	public void init(ContextRefreshedEvent event) {
 		serviceCounterMappingRepo.findAll().forEach(scm -> {
 			if (scm.getType().equals(Customer.CustomerType.PREMIUM)) {
-				addServiceCounterMapping(scm, premiumServiceCounters);
+				premiumServiceCounters = addServiceCounterMapping(scm, premiumServiceCounters);
 			}
 			else {
-				addServiceCounterMapping(scm, normalServiceCounters);
+				normalServiceCounters = addServiceCounterMapping(scm, normalServiceCounters);
 			}
 		});
 	}
@@ -59,6 +59,7 @@ public class CustomerPriorityAndQueueBasedCounterAllocator implements CounterAll
 					allocatedCounter = counter;
 				}
 			}
+			allocatedCounter.setQueueSize(minQueueSize+1);
 			return allocatedCounter;
 		}
 		return null;
@@ -83,7 +84,7 @@ public class CustomerPriorityAndQueueBasedCounterAllocator implements CounterAll
 		return counters;
 	}
 
-	private void addServiceCounterMapping(ServiceCounterMapping scm, Map<String, List<Counter>> serviceCounters) {
+	private Map<String, List<Counter>> addServiceCounterMapping(ServiceCounterMapping scm, Map<String, List<Counter>> serviceCounters) {
 		String serviceName = scm.getService().getName();
 		List<Counter> counters = serviceCounters.get(serviceName);
 		if (counters == null) {
@@ -91,6 +92,7 @@ public class CustomerPriorityAndQueueBasedCounterAllocator implements CounterAll
 		}
 		counters.add(scm.getCounter());
 		serviceCounters.put(serviceName, counters);
+		return serviceCounters;
 	}
 
 }

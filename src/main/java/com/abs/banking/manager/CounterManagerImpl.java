@@ -75,9 +75,7 @@ public class CounterManagerImpl implements CounterManager {
 				tokenQueueService.addToNextQueue(token);
 			}
 		}
-		else {
-			token.setStatusCode(newTokenStatus);
-		}
+		token.setStatusCode(newTokenStatus);
 		tokenService.save(token);
 	}
 

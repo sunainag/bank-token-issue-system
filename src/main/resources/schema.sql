@@ -106,10 +106,10 @@ update service set next_service_id = 3 where id = 2;
 
 insert into service_counter_mapping values (null, 'PREMIUM', 1, 1);
 insert into service_counter_mapping values (null, 'PREMIUM', 2, 2);
-insert into service_counter_mapping values (null, 'PREMIUM', 2, 2);
+insert into service_counter_mapping values (null, 'PREMIUM', 2, 5);
 insert into service_counter_mapping values (null, 'PREMIUM', 3, 3);
 
 insert into service_counter_mapping values (null, 'REGULAR', 4, 1);
 insert into service_counter_mapping values (null, 'REGULAR', 5, 2);
-insert into service_counter_mapping values (null, 'REGULAR', 5, 2);
+insert into service_counter_mapping values (null, 'REGULAR', 5, 6);
 insert into service_counter_mapping values (null, 'REGULAR', 6, 3);

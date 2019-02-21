@@ -37,6 +37,7 @@ public class CounterServiceImpl implements CounterService {
 	@Override
 	public Token assignNextService(Token token) {
 		TokenServiceMapping nextService = null;
+	
 		Iterator<TokenServiceMapping> i = token.getTokenServices().iterator();
 		while (i.hasNext()) {
 			TokenServiceMapping tsm = i.next();

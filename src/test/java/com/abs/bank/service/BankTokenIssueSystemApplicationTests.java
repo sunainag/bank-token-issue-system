@@ -35,6 +35,7 @@ public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 	public void setUp() {
 		super.setUp();
 		counterNumber = getCounterNumber();
+		tokenNumber=0;
 	}
 
 	// GET API test case

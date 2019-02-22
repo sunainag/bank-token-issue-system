@@ -29,6 +29,7 @@ public class TokenBlockingQueueService implements TokenQueueService {
 	TokenQueueProducer producer;
 
 	//TODO: instead use a circularfifoqueue or Dequeue
+	//BlockingQueue //
 	ConcurrentLinkedDeque<Token> tokenQueue;
 
 	// map of counter numbers : queue of tokens
@@ -80,7 +81,7 @@ public class TokenBlockingQueueService implements TokenQueueService {
 			//add to the head of the token queue
 			tokenQueue.offerFirst(token);
 
-			addToTokenQueue(token);
+//			/addToTokenQueue(token);
 		}
 		catch (InterruptedException e) {
 			e.printStackTrace();
@@ -125,12 +126,13 @@ public class TokenBlockingQueueService implements TokenQueueService {
 	}
 
 	private Counter addToTokenQueue(Token token) throws InterruptedException {
-		if (token.isInactive()) {
-			// log info - inappropriate token state
-			return null;
+		if (token==null || token.isInactive()) {
+			throw new BusinessException(BusinessException.ErrorCode.INVALID_TOKEN_STATE);
 		}
 
 		Counter counter = counterAllocator.allocate(token);
+		if(counter==null) 
+			throw new BusinessException(BusinessException.ErrorCode.COUNTER_NOT_ASSIGNED_TO_THIS_TOKEN);
 		token.setCurrentCounter(counter);
 		PriorityBlockingQueue<Token> counterQueue = counterWiseQueueMap.get(counter.getNumber());
 		if (counterQueue == null) {

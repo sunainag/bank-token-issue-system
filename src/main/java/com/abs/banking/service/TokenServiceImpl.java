@@ -77,8 +77,8 @@ public class TokenServiceImpl implements TokenService {
 	}
 
 	@Override
-	public void save(Token token) {
-		tokenRepo.save(token);
+	public Token save(Token token) {
+		return tokenRepo.save(token);
 	}
 
 	private Token generateTokenNumber(Customer customer) {

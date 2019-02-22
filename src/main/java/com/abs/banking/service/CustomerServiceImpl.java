@@ -1,5 +1,7 @@
 package com.abs.banking.service;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,7 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
+	@Transactional
 	public Customer create(Customer customer) {
 		if (customer != null)
 			return customerRepo.save(customer);

@@ -10,7 +10,10 @@ public class BusinessException extends RuntimeException {
 										"Premium or Regular Service counters are not initialized correctly. This is a technical issue."), INVALID_COUNTER_ID(
 												3004,
 												"Please pass a valid counter id"), TOKEN_NOT_ASSIGNED_TO_THIS_COUNTER(
-														3005, "No token assigned to this counter");
+														3005,
+														"No token assigned to this counter"), COUNTER_NOT_ASSIGNED_TO_THIS_TOKEN(
+																3006,
+																"No counter is assigned to this token due to technial issue");
 
 		private int code;
 		private String message;

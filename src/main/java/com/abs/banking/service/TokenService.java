@@ -21,6 +21,6 @@ public interface TokenService {
 
 	void comment(Integer tokenNumber, String comments);
 
-	void save(Token token);
+	Token save(Token token);
 
 }

@@ -61,8 +61,9 @@ public class CustomerPriorityAndQueueBasedCounterAllocator implements CounterAll
 			}
 			allocatedCounter.setQueueSize(minQueueSize+1);
 			return allocatedCounter;
+		}else {
+			throw new BusinessException(BusinessException.ErrorCode.COUNTERS_NOT_INITIALIZED_CORRECTLY);
 		}
-		return null;
 	}
 
 	private List<Counter> getServiceCountersBasedOnCustomerPriority(Services service, Customer customer) {

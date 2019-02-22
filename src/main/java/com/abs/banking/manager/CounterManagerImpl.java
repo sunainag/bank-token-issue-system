@@ -59,7 +59,8 @@ public class CounterManagerImpl implements CounterManager {
 	}
 
 	@Override
-	public ResponseEntity<Integer> updateTokenStatusById(Integer counterNumber, Integer tokenNumber, StatusCode newTokenStatus) {
+	public ResponseEntity<Integer> updateTokenStatusById(Integer counterNumber, Integer tokenNumber,
+			StatusCode newTokenStatus) {
 		if (validateCounterForToken(counterNumber, tokenNumber)) {
 			resolveToken(tokenNumber, newTokenStatus);
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(tokenNumber);
@@ -70,13 +71,33 @@ public class CounterManagerImpl implements CounterManager {
 	private void resolveToken(Integer tokenNumber, StatusCode newTokenStatus) {
 		Token token = getToken(tokenNumber);
 		if (StatusCode.COMPLETED.equals(newTokenStatus)) {
-			token = counterService.assignNextService(token);
-			if (token.getCurrentService() != null) {
-				tokenQueueService.addToNextQueue(token);
-			}
+			token = resolveMultiServiceTokenIfExists(token, newTokenStatus);
+		} else {
+			token.setStatusCode(newTokenStatus);
 		}
-		token.setStatusCode(newTokenStatus);
 		tokenService.save(token);
+	}
+
+	/**
+	 * For current entry of token in token table, mark as complete, and create new entry
+	 * with new counter id
+	 * 
+	 * @param token
+	 * @param newTokenStatus
+	 * @return Token new token entry created for next service
+	 */
+	private Token resolveMultiServiceTokenIfExists(Token token, StatusCode newTokenStatus) {
+		token = counterService.assignNextService(token);
+		token.setStatusCode(StatusCode.COMPLETED);
+		tokenService.save(token);
+		
+		if (token.getCurrentService() != null) {
+			Token newToken = token;
+			tokenQueueService.addToNextQueue(token);
+			return tokenService.save(token);
+		}
+		
+		return token;
 	}
 
 	private boolean validateCounterForToken(Integer counterNumber, Integer tokenNumber) {

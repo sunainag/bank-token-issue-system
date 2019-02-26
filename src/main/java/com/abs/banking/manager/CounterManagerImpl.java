@@ -85,13 +85,13 @@ public class CounterManagerImpl implements CounterManager {
 	 * 
 	 * @param token
 	 * @param newTokenStatus
-	 * @return Token new token entry created for next service
+	 * @return Token new token entry created for next service 
 	 */
 	private Token resolveMultiServiceTokenIfExists(Token token, StatusCode newTokenStatus) {
 		token = counterService.assignNextService(token);
 		if (token.getCurrentService() != null) {
 			Token newToken = token;
-			newToken.setStatus(StatusCode.IN_PROGRESS);
+			newToken.setStatusCode(StatusCode.IN_PROGRESS);
 			newToken.setCurrentCounter(null);
 			newToken = tokenQueueService.addToNextQueue(newToken);
 			return tokenService.save(newToken);

@@ -9,6 +9,6 @@ public interface TokenQueueService {
 
 	Token pollNextInQueue(Counter counter);
 
-	Counter addToNextQueue(Token token);
+	Token addToNextQueue(Token token);
 
 }

@@ -81,10 +81,12 @@ public class TokenServiceImpl implements TokenService {
 		return tokenRepo.save(token);
 	}
 	
+	//TODO
 	@Override
 	public boolean existsToken(Customer customer, List<String> services) {
-		Services service = findServiceByName(services.get(0));
-		return tokenRepo.findByCustomerAndServices(customer.getId(),service.getId())!=null;
+		/*Services service = findServiceByName(services.get(0));
+		return tokenRepo.findByCustomerAndServices(customer.getId(),service.getId()).isPresent();*/
+		return true;
 	}
 
 	private Token generateTokenNumber(Customer customer) {

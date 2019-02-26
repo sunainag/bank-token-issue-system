@@ -40,7 +40,7 @@ public class Token {
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "customer_id")
-	private Customer customer;
+	Customer customer;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "token")
 	private List<TokenServiceMapping> tokenServices;
@@ -51,7 +51,7 @@ public class Token {
 
 	@ManyToOne
 	@JoinColumn(name = "current_service_id")
-	private Services currentService;
+	Services currentService;
 
 	@Enumerated(EnumType.STRING)
 	@NotNull

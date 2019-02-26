@@ -29,7 +29,7 @@ public class TokenBlockingQueueService implements TokenQueueService {
 
 	TokenQueueProducer producer;
 
-	//TODO: instead use a circularfifoqueue or Dequeue(tried ConcurrentLinkedDeque: didn't work coz of concurrency issue) 
+	// TODO: instead use a circularfifoqueue or Dequeue(tried ConcurrentLinkedDeque)
 	BlockingQueue<Token> tokenQueue;
 
 	// map of counter numbers : queue of tokens
@@ -58,42 +58,43 @@ public class TokenBlockingQueueService implements TokenQueueService {
 				}
 
 				return token;
-			}
-			else {
+			} else {
 				throw new BusinessException(BusinessException.ErrorCode.TOKEN_NOT_ASSIGNED_TO_THIS_COUNTER);
 			}
-		}
-		catch (InterruptedException e) {
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	
-	/* 
-	 * Set status for next queue to be IN_PROGRESS;
-	 * Already removed from previous queue;  when counter gets the token from queue @see this.pollNextInQueue(...) ;
-	 * Add to the token queue with highest priority, as this token is already in process from previous queue;
+	/*
+	 * Set status for next queue to be IN_PROGRESS; Already removed from previous
+	 * queue; when counter gets the token from queue @see this.pollNextInQueue(...)
+	 * ; Add to the token queue with highest priority, as this token is already in
+	 * process from previous queue;
 	 * 
 	 */
 	@Override
-	public Counter addToNextQueue(Token token) {
+	public Token addToNextQueue(Token token) {
 		token.setStatusCode(StatusCode.IN_PROGRESS);
 		token.getCurrentService().setType(ServicesType.URGENT);
 		tokenQueue.add(token);
-		return token.getCurrentCounter();
+		return token;
 	}
 
 	/**
-	 * Producer thread to allocate queue for each token generated and assign them a counter
+	 * Producer thread to allocate queue for each token generated and assign them a
+	 * counter
 	 *
 	 */
 	class TokenQueueProducer extends Thread {
 
 		public void run() {
 			try {
-				Token token = tokenQueue.take();
-				addToTokenQueue(token);
+				while (true) {
+					Token token = tokenQueue.take();
+					addToTokenQueue(token);
+				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -101,7 +102,8 @@ public class TokenBlockingQueueService implements TokenQueueService {
 	}
 
 	/**
-	 * Comparator to decide the sequence in which the token is to be served first in the queue
+	 * Comparator to decide the sequence in which the token is to be served first in
+	 * the queue
 	 *
 	 */
 	class TokenPriorityComparator implements Comparator<Token> {
@@ -123,22 +125,22 @@ public class TokenBlockingQueueService implements TokenQueueService {
 		}
 	}
 
-	private Counter addToTokenQueue(Token token){
-		if (token==null || token.isInactive()) {
+	private Counter addToTokenQueue(Token token) {
+		if (token == null || token.isInactive()) {
 			throw new BusinessException(BusinessException.ErrorCode.INVALID_TOKEN_STATE);
 		}
 
 		Counter counter = counterAllocator.allocate(token);
-		if(counter==null) 
+		if (counter == null)
 			throw new BusinessException(BusinessException.ErrorCode.COUNTER_NOT_ASSIGNED_TO_THIS_TOKEN);
 		token.setCurrentCounter(counter);
+		saveTokenState(token);
 		PriorityBlockingQueue<Token> counterQueue = counterWiseQueueMap.get(counter.getNumber());
 		if (counterQueue == null) {
 			counterQueue = new PriorityBlockingQueue<>(11, new TokenPriorityComparator());
 		}
 		counterQueue.put(token);
 		counterWiseQueueMap.put(counter.getNumber(), counterQueue);
-		saveTokenState(token);
 		return counter;
 	}
 

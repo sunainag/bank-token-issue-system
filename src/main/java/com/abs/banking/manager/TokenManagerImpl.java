@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import com.abs.banking.dto.TokenRequest;
-import com.abs.banking.exception.BusinessException;
 import com.abs.banking.model.Customer;
 import com.abs.banking.model.Token;
 import com.abs.banking.service.CounterService;
@@ -33,13 +32,10 @@ public class TokenManagerImpl implements TokenManager {
 	public ResponseEntity<String> issueToken(TokenRequest tokenReq) {
 
 		Customer customer = customerService.getByToken(tokenReq);
-		if (!tokenService.existsToken(customer, tokenReq.getServices())) {
-			Token token = tokenService.issueToken(customer, tokenReq.getServices());
+		Token token = tokenService.issueToken(customer, tokenReq.getServices());
 
-			return ResponseEntity.status(HttpStatus.CREATED).body(
-					"Token number:" + token.getNumber() + " is assigned counter number:" + token.getCounterNumber());
-		}
-		throw new BusinessException(BusinessException.ErrorCode.DUPLICATE_CUSTOMER);
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body("Token number:" + token.getNumber() + " is assigned counter number:" + token.getCounterNumber());
 	}
 
 	@Override

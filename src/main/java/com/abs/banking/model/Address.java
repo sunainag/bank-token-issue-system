@@ -2,10 +2,12 @@ package com.abs.banking.model;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -36,6 +38,9 @@ public class Address {
 
 	@NotNull
 	private Date created;
+	
+	@OneToOne(mappedBy="address",cascade= {CascadeType.MERGE,CascadeType.PERSIST})
+	private Customer customer;
 
 	public Address() {
 		this.created = new Date();
@@ -103,6 +108,14 @@ public class Address {
 
 	public void setCreated(Date created) {
 		this.created = created;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 
 }

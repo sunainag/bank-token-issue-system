@@ -45,7 +45,7 @@ public class CustomerPriorityAndQueueBasedCounterAllocator implements CounterAll
 	}
 
 	@Override
-	public Counter allocate(Token token) {
+	public synchronized Counter allocate(Token token) {
 		List<Counter> counters = getServiceCountersBasedOnCustomerPriority(token.getCurrentService(),
 				token.getCustomer());
 		if (counters!=null && !counters.isEmpty()) {

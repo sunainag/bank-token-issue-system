@@ -45,11 +45,11 @@ public class Token {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "token")
 	private List<TokenServiceMapping> tokenServices;
 
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@ManyToOne
 	@JoinColumn(name = "current_counter_id")
 	private Counter currentCounter;
 
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne
 	@JoinColumn(name = "current_service_id")
 	private Services currentService;
 

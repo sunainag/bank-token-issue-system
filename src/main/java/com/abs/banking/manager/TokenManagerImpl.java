@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import com.abs.banking.dto.TokenRequest;
+import com.abs.banking.exception.BusinessException;
 import com.abs.banking.model.Customer;
 import com.abs.banking.model.Token;
 import com.abs.banking.service.CounterService;
@@ -32,9 +33,13 @@ public class TokenManagerImpl implements TokenManager {
 	public ResponseEntity<String> issueToken(TokenRequest tokenReq) {
 
 		Customer customer = customerService.getByToken(tokenReq);
-		Token token = tokenService.issueToken(customer, tokenReq.getServices());
+		if (!tokenService.existsToken(customer, tokenReq.getServices())) {
+			Token token = tokenService.issueToken(customer, tokenReq.getServices());
 
-		return ResponseEntity.status(HttpStatus.CREATED).body("Token number assigned:" + token.getNumber());
+			return ResponseEntity.status(HttpStatus.CREATED).body(
+					"Token number:" + token.getNumber() + " is assigned counter number:" + token.getCounterNumber());
+		}
+		throw new BusinessException(BusinessException.ErrorCode.DUPLICATE_CUSTOMER);
 	}
 
 	@Override
@@ -45,8 +50,8 @@ public class TokenManagerImpl implements TokenManager {
 	@Override
 	public Map<Integer, List<Integer>> getActiveTokens() {
 		List<Token> activeTokens = tokenService.findByStatusCode(Token.StatusCode.ACTIVE);
-		Map<Integer, List<Integer>> counterToTokens = activeTokens.stream().collect(Collectors.groupingBy(
-				t -> t.getCounterNumber(), Collectors.mapping(Token::getNumber, Collectors.toList())));
+		Map<Integer, List<Integer>> counterToTokens = activeTokens.stream().collect(Collectors
+				.groupingBy(t -> t.getCounterNumber(), Collectors.mapping(Token::getNumber, Collectors.toList())));
 		return counterToTokens;
 	}
 

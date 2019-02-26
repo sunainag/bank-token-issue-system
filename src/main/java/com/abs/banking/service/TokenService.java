@@ -23,4 +23,6 @@ public interface TokenService {
 
 	Token save(Token token);
 
+	boolean existsToken(Customer customer, List<String> services);
+
 }

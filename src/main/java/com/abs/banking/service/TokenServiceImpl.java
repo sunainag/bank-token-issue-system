@@ -80,6 +80,12 @@ public class TokenServiceImpl implements TokenService {
 	public Token save(Token token) {
 		return tokenRepo.save(token);
 	}
+	
+	@Override
+	public boolean existsToken(Customer customer, List<String> services) {
+		Services service = findServiceByName(services.get(0));
+		return tokenRepo.findByCustomerAndServices(customer.getId(),service.getId())!=null;
+	}
 
 	private Token generateTokenNumber(Customer customer) {
 		return new Token(sequenceGenerator.generate(), customer);
@@ -115,4 +121,5 @@ public class TokenServiceImpl implements TokenService {
 	private Token saveOrUpdate(Token token) {
 		return tokenRepo.save(token);
 	}
+
 }

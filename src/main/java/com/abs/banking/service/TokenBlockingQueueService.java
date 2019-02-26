@@ -2,8 +2,9 @@ package com.abs.banking.service;
 
 import java.util.Comparator;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,8 @@ public class TokenBlockingQueueService implements TokenQueueService {
 
 	TokenQueueProducer producer;
 
-	//TODO: instead use a circularfifoqueue or Dequeue
-	//BlockingQueue //
-	ConcurrentLinkedDeque<Token> tokenQueue;
+	//TODO: instead use a circularfifoqueue or Dequeue(tried ConcurrentLinkedDeque: didn't work coz of concurrency issue) 
+	BlockingQueue<Token> tokenQueue;
 
 	// map of counter numbers : queue of tokens
 	Map<Integer, PriorityBlockingQueue<Token>> counterWiseQueueMap;
@@ -38,7 +38,7 @@ public class TokenBlockingQueueService implements TokenQueueService {
 	@Override
 	public void putInQueue(Token token) {
 		initialize();
-		tokenQueue.offerLast(token);
+		tokenQueue.add(token);
 	}
 
 	@Override
@@ -69,34 +69,32 @@ public class TokenBlockingQueueService implements TokenQueueService {
 		return null;
 	}
 
+	
+	/* 
+	 * Set status for next queue to be IN_PROGRESS;
+	 * Already removed from previous queue;  when counter gets the token from queue @see this.pollNextInQueue(...) ;
+	 * Add to the token queue with highest priority, as this token is already in process from previous queue;
+	 * 
+	 */
 	@Override
 	public Counter addToNextQueue(Token token) {
-		try {
-			//already removed from previous queue
-			token.setStatusCode(StatusCode.IN_PROGRESS);
-
-			//TODO:set highest priority
-			token.getCurrentService().setType(ServicesType.URGENT);
-
-			//add to the head of the token queue
-			tokenQueue.offerFirst(token);
-
-//			/addToTokenQueue(token);
-		}
-		catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		token.setStatusCode(StatusCode.IN_PROGRESS);
+		token.getCurrentService().setType(ServicesType.URGENT);
+		tokenQueue.add(token);
 		return token.getCurrentCounter();
 	}
 
+	/**
+	 * Producer thread to allocate queue for each token generated and assign them a counter
+	 *
+	 */
 	class TokenQueueProducer extends Thread {
 
 		public void run() {
 			try {
-				Token token = tokenQueue.poll();
+				Token token = tokenQueue.take();
 				addToTokenQueue(token);
-			}
-			catch (InterruptedException e) {
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
@@ -116,8 +114,8 @@ public class TokenBlockingQueueService implements TokenQueueService {
 	}
 
 	private void initialize() {
-		if (counterWiseQueueMap == null || producer==null) {
-			tokenQueue = new ConcurrentLinkedDeque<>();
+		if (tokenQueue == null) {
+			tokenQueue = new LinkedBlockingQueue<>();
 			counterWiseQueueMap = new ConcurrentHashMap<>();
 			producer = new TokenQueueProducer();
 			producer.start();
@@ -125,7 +123,7 @@ public class TokenBlockingQueueService implements TokenQueueService {
 		}
 	}
 
-	private Counter addToTokenQueue(Token token) throws InterruptedException {
+	private Counter addToTokenQueue(Token token){
 		if (token==null || token.isInactive()) {
 			throw new BusinessException(BusinessException.ErrorCode.INVALID_TOKEN_STATE);
 		}

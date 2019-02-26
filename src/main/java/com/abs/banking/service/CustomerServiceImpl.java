@@ -33,8 +33,11 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	@Transactional
 	public Customer create(Customer customer) {
-		if (customer != null)
-			return customerRepo.save(customer);
+		Customer cust = customer;
+		if (customer != null) {
+			cust.setAddress(customer.getAddress());
+			return customerRepo.save(cust);
+		}
 		return null;
 	}
 

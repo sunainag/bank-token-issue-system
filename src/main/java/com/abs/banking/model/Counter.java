@@ -1,5 +1,7 @@
 package com.abs.banking.model;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -7,6 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -29,7 +32,10 @@ public class Counter {
 
 	@Column(name = "queue_size")
 	private int queueSize;
-
+	
+	@OneToMany(mappedBy="currentCounter")
+	private List<Token> token;
+	
 	public Counter() {
 	}
 
@@ -58,6 +64,14 @@ public class Counter {
 
 	public void setQueueSize(int queueSize) {
 		this.queueSize = queueSize;
+	}
+
+	public List<Token> getToken() {
+		return token;
+	}
+
+	public void setToken(List<Token> token) {
+		this.token = token;
 	}
 
 	@Override

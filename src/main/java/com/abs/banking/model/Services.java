@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -48,6 +49,9 @@ public class Services {
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "service_counter_mapping", joinColumns = @JoinColumn(name = "service_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "counter_id", referencedColumnName = "id"))
 	private List<Counter> counters;
+	
+	@OneToMany(mappedBy="currentService")
+	private List<Token> token;
 
 	public Services() {
 	}
@@ -82,6 +86,14 @@ public class Services {
 
 	public void setType(ServicesType type) {
 		this.type = type;
+	}
+
+	public List<Token> getToken() {
+		return token;
+	}
+
+	public void setToken(List<Token> token) {
+		this.token = token;
 	}
 
 	public static class ServicesBuilder {

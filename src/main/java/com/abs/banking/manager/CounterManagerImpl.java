@@ -68,14 +68,15 @@ public class CounterManagerImpl implements CounterManager {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(tokenNumber);
 	}
 
-	private void resolveToken(Integer tokenNumber, StatusCode newTokenStatus) {
+	private Token resolveToken(Integer tokenNumber, StatusCode newTokenStatus) {
 		Token token = getToken(tokenNumber);
-		if (StatusCode.COMPLETED.equals(newTokenStatus)) {
-			token = resolveMultiServiceTokenIfExists(token, newTokenStatus);
-		} else {
-			token.setStatusCode(newTokenStatus);
-		}
+		token.setStatusCode(newTokenStatus);
 		tokenService.save(token);
+		
+		if (StatusCode.COMPLETED.equals(newTokenStatus)) {
+			return resolveMultiServiceTokenIfExists(token, newTokenStatus);
+		} 
+		return token;
 	}
 
 	/**
@@ -88,15 +89,13 @@ public class CounterManagerImpl implements CounterManager {
 	 */
 	private Token resolveMultiServiceTokenIfExists(Token token, StatusCode newTokenStatus) {
 		token = counterService.assignNextService(token);
-		token.setStatusCode(StatusCode.COMPLETED);
-		tokenService.save(token);
-		
 		if (token.getCurrentService() != null) {
 			Token newToken = token;
-			tokenQueueService.addToNextQueue(token);
-			return tokenService.save(token);
+			newToken.setStatus(StatusCode.IN_PROGRESS);
+			newToken.setCurrentCounter(null);
+			newToken = tokenQueueService.addToNextQueue(newToken);
+			return tokenService.save(newToken);
 		}
-		
 		return token;
 	}
 

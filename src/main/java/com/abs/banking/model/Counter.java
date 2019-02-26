@@ -1,6 +1,7 @@
 package com.abs.banking.model;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,7 +35,7 @@ public class Counter {
 	private int queueSize;
 	
 	@OneToMany(mappedBy="currentCounter")
-	private List<Token> token;
+	private Collection<Token> tokens = new ArrayList<Token>();
 	
 	public Counter() {
 	}
@@ -66,12 +67,12 @@ public class Counter {
 		this.queueSize = queueSize;
 	}
 
-	public List<Token> getToken() {
-		return token;
+	public Collection<Token> getToken() {
+		return tokens;
 	}
 
-	public void setToken(List<Token> token) {
-		this.token = token;
+	public void setToken(Collection<Token> token) {
+		this.tokens = token;
 	}
 
 	@Override

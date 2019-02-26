@@ -27,9 +27,8 @@ public class TokenBlockingQueueService implements TokenQueueService {
 	@Autowired
 	TokenRepository tokenRepo;
 
-	TokenQueueProducer producer;
+	TokenQueueConsumer producer;
 
-	// TODO: instead use a circularfifoqueue or Dequeue(tried ConcurrentLinkedDeque)
 	BlockingQueue<Token> tokenQueue;
 
 	// map of counter numbers : queue of tokens
@@ -83,16 +82,17 @@ public class TokenBlockingQueueService implements TokenQueueService {
 	}
 
 	/**
-	 * Producer thread to allocate queue for each token generated and assign them a
+	 * Consumer thread to allocate queue for each token generated and assign them a
 	 * counter
 	 *
 	 */
-	class TokenQueueProducer extends Thread {
+	class TokenQueueConsumer extends Thread {
 
 		public void run() {
 			try {
 				while (true) {
 					Token token = tokenQueue.take();
+					Thread.sleep(1000);
 					addToTokenQueue(token);
 				}
 			} catch (InterruptedException e) {
@@ -119,7 +119,7 @@ public class TokenBlockingQueueService implements TokenQueueService {
 		if (tokenQueue == null) {
 			tokenQueue = new LinkedBlockingQueue<>();
 			counterWiseQueueMap = new ConcurrentHashMap<>();
-			producer = new TokenQueueProducer();
+			producer = new TokenQueueConsumer();
 			producer.start();
 
 		}
@@ -134,7 +134,7 @@ public class TokenBlockingQueueService implements TokenQueueService {
 		if (counter == null)
 			throw new BusinessException(BusinessException.ErrorCode.COUNTER_NOT_ASSIGNED_TO_THIS_TOKEN);
 		token.setCurrentCounter(counter);
-		saveTokenState(token);
+		tokenRepo.save(token);
 		PriorityBlockingQueue<Token> counterQueue = counterWiseQueueMap.get(counter.getNumber());
 		if (counterQueue == null) {
 			counterQueue = new PriorityBlockingQueue<>(11, new TokenPriorityComparator());
@@ -142,10 +142,6 @@ public class TokenBlockingQueueService implements TokenQueueService {
 		counterQueue.put(token);
 		counterWiseQueueMap.put(counter.getNumber(), counterQueue);
 		return counter;
-	}
-
-	private void saveTokenState(Token token) {
-		tokenRepo.saveAndFlush(token);
 	}
 
 }

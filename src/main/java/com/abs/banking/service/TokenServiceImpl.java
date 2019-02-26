@@ -38,7 +38,7 @@ public class TokenServiceImpl implements TokenService {
 		Token token = generateTokenNumber(customer);
 		assignTokenServices(token, services);
 		tokenQueueService.putInQueue(token);
-		return saveOrUpdate(token);
+		return save(token);
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class TokenServiceImpl implements TokenService {
 		Token token = getTokenByNumber(tokenNumber);
 		token.getTokenServices().stream().filter(tsm -> tsm.getService().getId() == token.getCurrentService().getId())
 				.findFirst().get().setComments(comments);
-		saveOrUpdate(token);
+		save(token);
 	}
 
 	@Override
@@ -118,10 +118,6 @@ public class TokenServiceImpl implements TokenService {
 
 	private Services findServiceByName(String name) {
 		return serviceRepo.findByName(name);
-	}
-
-	private Token saveOrUpdate(Token token) {
-		return tokenRepo.save(token);
 	}
 
 }

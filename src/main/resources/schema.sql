@@ -23,7 +23,7 @@ CREATE TABLE `address` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `counter` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `number` int(11) DEFAULT NULL,
   `priority` varchar(255) DEFAULT NULL,
   `queue_size` int(11) DEFAULT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE `service` (
 CREATE TABLE `service_counter_mapping` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `type` varchar(255) NOT NULL,
-  `counter_id` bigint(20) NOT NULL,
+  `counter_id` int(11) NOT NULL,
   `service_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`counter_id`) REFERENCES `counter` (`id`),
@@ -67,7 +67,7 @@ CREATE TABLE `token` (
   `created` datetime NOT NULL,
   `number` int(11) NOT NULL,
   `status_code` varchar(255) NOT NULL,
-  `current_counter_id` bigint(20) DEFAULT NULL,
+  `current_counter_id` int(11) DEFAULT NULL,
   `current_service_id` bigint(20) DEFAULT NULL,
   `customer_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),

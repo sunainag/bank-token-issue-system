@@ -9,12 +9,12 @@ Maven
 MySQL
 ```
 
-**Schema installation:**
+**Tables :**
+
+![tables](https://user-images.githubusercontent.com/9528278/53478960-07b42100-3a9e-11e9-8175-62a6f62e8501.png)
+
 ```
 Run the file schema.sql present in src/main/resources to set up the database. 
-
-The tables created are: 
-![alt text](https://raw.githubusercontent.com/sunainag/bank-token-issue-system/master/doc/Tables.png)
 
 ```
 

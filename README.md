@@ -14,8 +14,7 @@ MySQL
 Run the file schema.sql present in src/main/resources to set up the database. 
 
 The tables created are: 
-
-![Alt Text](doc/Tables.png)
+![alt text](https://raw.githubusercontent.com/sunainag/bank-token-issue-system/master/doc/Tables.png)
 
 ```
 

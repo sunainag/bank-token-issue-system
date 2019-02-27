@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class BankOperationsExceptionHandler extends ResponseEntityExceptionHandler {
 
-	private static final String COUNTERS_UNAVAILABLE = "Counters are busy. Please wait in the queue";
+	//private static final String COUNTERS_UNAVAILABLE = "Counters are busy. Please wait in the queue";
 	private static final String INVALID_TOKEN = "Please pass a valid token id";
 
 	@ExceptionHandler(BusinessException.class)

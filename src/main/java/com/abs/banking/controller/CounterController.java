@@ -6,10 +6,11 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,19 +45,22 @@ public class CounterController {
 		return counterManager.getCounter(counterNum);
 	}
 
-	@PostMapping(value = "/counters/{counterNumber}/tokens/{tokenNumber}/comment")
-	public void commentOnToken(@PathVariable("tokenNumber") @NotNull Integer tokenNumber,
-			@RequestBody String comments) {
+	@PatchMapping(value = "/counters/{counterNumber}/tokens/{tokenNumber}")
+	public ResponseEntity<?> commentOnToken(@PathVariable("tokenNumber") @NotNull Integer tokenNumber,
+			@RequestBody MultiValueMap<String,Object> updates) {
+		 String comments = updates.getFirst("comments").toString();
 		counterManager.setComments(tokenNumber, comments);
+		return ResponseEntity.ok("comments updated");
 	}
 
 	@PostMapping(value = "/counters/{counterNumber}/tokens/{tokenNumber}/cancel")
-	public void cancelToken(@PathVariable("tokenNumber") @NotNull Integer tokenNumber) {
+	public ResponseEntity<?> cancelToken(@PathVariable("tokenNumber") @NotNull Integer tokenNumber) {
 		counterManager.updateTokenStatusById(tokenNumber, tokenNumber, Token.StatusCode.CANCELLED);
+		return ResponseEntity.ok("Token "+tokenNumber+" cancelled");
 	}
 
 	@PostMapping(value = "counters/{counterNumber}/tokens/{tokenNumber}/complete")
-	public ResponseEntity<Integer> completeToken(@PathVariable("counterNumber") Integer counterNumber,
+	public ResponseEntity<?> completeToken(@PathVariable("counterNumber") Integer counterNumber,
 			@PathVariable("tokenNumber") Integer tokenNumber) {
 		return counterManager.updateTokenStatusById(counterNumber, tokenNumber, StatusCode.COMPLETED);
 	}

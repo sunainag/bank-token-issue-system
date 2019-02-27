@@ -20,7 +20,6 @@ import com.abs.banking.model.Counter;
 import com.abs.banking.model.Counter.Priority;
 import com.abs.banking.model.Customer;
 import com.abs.banking.model.Customer.CustomerType;
-import com.abs.banking.model.Token;
 
 public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 
@@ -55,7 +54,7 @@ public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 			assertTrue(activeTokensPerCounter.get(1).get(0).intValue() == 1);
 	}
 
-	// POST API test case
+	// PUT API test case
 	@Test
 	public void issueToken() throws Exception {
 
@@ -67,7 +66,7 @@ public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 
 		for (TokenRequest tokenRequest : requests) {
 			String inputJson = mapToJson(tokenRequest);
-			MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri + tokenUri)
+			MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri + tokenUri)
 					.contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
 
 			int status = mvcResult.getResponse().getStatus();

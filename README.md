@@ -75,7 +75,7 @@ POST /tokens/{tokenNumber}/cancel Cancels an active token
 POST /tokens/{tokenNumber}/complete Marks a service token a complete, in case the token is a multi-counter token, it gets queued at the next counter
 ```
 ```
-POST /tokens/{tokenNumber}/comment Records a comment against the current service of the token
+PATCH /tokens/{tokenNumber} Records a comment against the current service of the token
 ```
 ```
 GET /counters/{counterNumber} Get the details of the counter with given 'counterNumber'

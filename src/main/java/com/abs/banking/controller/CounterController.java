@@ -7,8 +7,8 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,18 +44,18 @@ public class CounterController {
 		return counterManager.getCounter(counterNum);
 	}
 
-	@PatchMapping(value = "/counters/{counterNumber}/tokens/{tokenNumber}/comment")
+	@PostMapping(value = "/counters/{counterNumber}/tokens/{tokenNumber}/comment")
 	public void commentOnToken(@PathVariable("tokenNumber") @NotNull Integer tokenNumber,
 			@RequestBody String comments) {
 		counterManager.setComments(tokenNumber, comments);
 	}
 
-	@PutMapping(value = "/counters/{counterNumber}/tokens/{tokenNumber}/cancel")
+	@PostMapping(value = "/counters/{counterNumber}/tokens/{tokenNumber}/cancel")
 	public void cancelToken(@PathVariable("tokenNumber") @NotNull Integer tokenNumber) {
 		counterManager.updateTokenStatusById(tokenNumber, tokenNumber, Token.StatusCode.CANCELLED);
 	}
 
-	@PutMapping(value = "counters/{counterNumber}/tokens/{tokenNumber}/complete")
+	@PostMapping(value = "counters/{counterNumber}/tokens/{tokenNumber}/complete")
 	public ResponseEntity<Integer> completeToken(@PathVariable("counterNumber") Integer counterNumber,
 			@PathVariable("tokenNumber") Integer tokenNumber) {
 		return counterManager.updateTokenStatusById(counterNumber, tokenNumber, StatusCode.COMPLETED);

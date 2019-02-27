@@ -38,8 +38,8 @@ public class Address {
 
 	@NotNull
 	private Date created;
-	
-	@OneToOne(mappedBy="address",cascade= {CascadeType.MERGE,CascadeType.PERSIST})
+
+	@OneToOne(mappedBy = "address", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
 	private Customer customer;
 
 	public Address() {

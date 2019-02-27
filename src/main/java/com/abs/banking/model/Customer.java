@@ -46,7 +46,7 @@ public class Customer {
 	private CustomerType type = CustomerType.REGULAR;
 
 	@NotNull
-	@OneToOne(cascade = CascadeType.ALL, fetch= FetchType.EAGER)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "address_id")
 	private Address address;
 
@@ -55,9 +55,8 @@ public class Customer {
 	// Allows dd/MM/yyyy date to be passed into GET request in JSON
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date created;
-	
-	
-	@OneToMany(mappedBy="customer")
+
+	@OneToMany(mappedBy = "customer")
 	private List<Token> token;
 
 	public Customer() {

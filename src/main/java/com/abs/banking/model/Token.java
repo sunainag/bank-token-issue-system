@@ -7,7 +7,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -46,7 +45,7 @@ public class Token {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "token")
 	private List<TokenServiceMapping> tokenServices;
 
-	@ManyToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+	@ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
 	@JoinColumn(name = "current_counter_id")
 	private Counter currentCounter;
 

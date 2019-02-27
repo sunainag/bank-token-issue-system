@@ -33,10 +33,10 @@ public class Counter {
 
 	@Column(name = "queue_size")
 	private int queueSize;
-	
-	@OneToMany(mappedBy="currentCounter")
+
+	@OneToMany(mappedBy = "currentCounter")
 	private Collection<Token> tokens = new ArrayList<Token>();
-	
+
 	public Counter() {
 	}
 

@@ -72,10 +72,10 @@ public class CounterManagerImpl implements CounterManager {
 		Token token = getToken(tokenNumber);
 		token.setStatusCode(newTokenStatus);
 		tokenService.save(token);
-		
+
 		if (StatusCode.COMPLETED.equals(newTokenStatus)) {
 			return resolveMultiServiceTokenIfExists(token, newTokenStatus);
-		} 
+		}
 		return token;
 	}
 

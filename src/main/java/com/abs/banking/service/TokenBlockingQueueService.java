@@ -57,10 +57,12 @@ public class TokenBlockingQueueService implements TokenQueueService {
 				}
 
 				return token;
-			} else {
+			}
+			else {
 				throw new BusinessException(BusinessException.ErrorCode.TOKEN_NOT_ASSIGNED_TO_THIS_COUNTER);
 			}
-		} catch (InterruptedException e) {
+		}
+		catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -95,7 +97,8 @@ public class TokenBlockingQueueService implements TokenQueueService {
 					Thread.sleep(1000);
 					addToTokenQueue(token);
 				}
-			} catch (InterruptedException e) {
+			}
+			catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
@@ -125,7 +128,7 @@ public class TokenBlockingQueueService implements TokenQueueService {
 		}
 	}
 
-	private Counter addToTokenQueue(Token token) {
+	private Counter addToTokenQueue(Token token) throws InterruptedException {
 		if (token == null || token.isInactive()) {
 			throw new BusinessException(BusinessException.ErrorCode.INVALID_TOKEN_STATE);
 		}
@@ -135,6 +138,7 @@ public class TokenBlockingQueueService implements TokenQueueService {
 			throw new BusinessException(BusinessException.ErrorCode.COUNTER_NOT_ASSIGNED_TO_THIS_TOKEN);
 		token.setCurrentCounter(counter);
 		tokenRepo.save(token);
+		Thread.sleep(1000);
 		PriorityBlockingQueue<Token> counterQueue = counterWiseQueueMap.get(counter.getNumber());
 		if (counterQueue == null) {
 			counterQueue = new PriorityBlockingQueue<>(11, new TokenPriorityComparator());

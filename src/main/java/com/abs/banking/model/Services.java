@@ -49,8 +49,8 @@ public class Services {
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "service_counter_mapping", joinColumns = @JoinColumn(name = "service_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "counter_id", referencedColumnName = "id"))
 	private List<Counter> counters;
-	
-	@OneToMany(mappedBy="currentService")
+
+	@OneToMany(mappedBy = "currentService")
 	private List<Token> token;
 
 	public Services() {

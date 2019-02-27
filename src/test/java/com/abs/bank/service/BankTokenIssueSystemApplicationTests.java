@@ -36,7 +36,7 @@ public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 	public void setUp() {
 		super.setUp();
 		counterNumber = getCounterNumber();
-		tokenNumber=0;
+		tokenNumber = 0;
 	}
 
 	// GET API test case
@@ -58,18 +58,18 @@ public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 	// POST API test case
 	@Test
 	public void issueToken() throws Exception {
-		
+
 		TokenRequest[] requests = new TokenRequest[3];
 
-		requests[0]=createTokenRequest("A", "Person A", "1234");
-		requests[1]=createTokenRequest("B", "Person B", "5678");
-		requests[2]=createTokenRequest("C", "Person C", "91011");
-		
-		for(TokenRequest tokenRequest:requests) {
+		requests[0] = createTokenRequest("A", "Person A", "1234", CustomerType.PREMIUM);
+		requests[1] = createTokenRequest("B", "Person B", "5678", CustomerType.REGULAR);
+		requests[2] = createTokenRequest("C", "Person C", "91011", CustomerType.REGULAR);
+
+		for (TokenRequest tokenRequest : requests) {
 			String inputJson = mapToJson(tokenRequest);
 			MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri + tokenUri)
 					.contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
-			
+
 			int status = mvcResult.getResponse().getStatus();
 			assertEquals(201, status);
 			String content = mvcResult.getResponse().getContentAsString();
@@ -79,12 +79,12 @@ public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 
 	}
 
-	private TokenRequest createTokenRequest(String servicename, String custName, String custMobile) {
+	private TokenRequest createTokenRequest(String servicename, String custName, String custMobile, CustomerType type) {
 		List<String> service = new ArrayList<String>();
 		service.add(0, servicename);
 
 		TokenRequest tokenReq = new TokenRequest();
-		tokenReq.setCustomer(createCustomer(custMobile, custName));
+		tokenReq.setCustomer(createCustomer(custMobile, custName, type));
 		tokenReq.setServices(service);
 		return tokenReq;
 	}
@@ -97,7 +97,7 @@ public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 		MvcResult mvcResult = mvc.perform(
 				MockMvcRequestBuilders.get(uri + counterUri + getTokenUri).accept(MediaType.APPLICATION_JSON_VALUE))
 				.andReturn();
-
+	
 		int status = mvcResult.getResponse().getStatus();
 		assertEquals(200, status);
 		String content = mvcResult.getResponse().getContentAsString();
@@ -116,23 +116,23 @@ public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 		String putUri = "/" + counterNumber + "/tokens/"+tokenNumber+"/complete";
 		Product product = new Product();
 		product.setName("Lemon");
-
+		
 		String inputJson = super.mapToJson(product);
 		MvcResult mvcResult = mvc.perform(
 				MockMvcRequestBuilders.put(uri+counterUri+putUri).contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson))
 				.andReturn();
-
+		
 		int status = mvcResult.getResponse().getStatus();
 		assertEquals(200, status);
 		String content = mvcResult.getResponse().getContentAsString();
 		assertEquals(content, "Product is updated successsfully");*/
 	}
-	
-	private Customer createCustomer(String mobile, String name) {
+
+	private Customer createCustomer(String mobile, String name, CustomerType type) {
 		Customer customer = new Customer();
 		customer.setMobile(mobile);
 		customer.setName(name);
-		customer.setType(CustomerType.PREMIUM);
+		customer.setType(type);
 		customer.setAddress(createAddress());
 		return customer;
 	}

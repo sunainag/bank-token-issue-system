@@ -48,7 +48,7 @@ public class CustomerPriorityAndQueueBasedCounterAllocator implements CounterAll
 	public synchronized Counter allocate(Token token) {
 		List<Counter> counters = getServiceCountersBasedOnCustomerPriority(token.getCurrentService(),
 				token.getCustomer());
-		if (counters!=null && !counters.isEmpty()) {
+		if (counters != null && !counters.isEmpty()) {
 			// Allocate counter with minimum queue size
 			int minQueueSize = Integer.MAX_VALUE;
 			Counter allocatedCounter = null;
@@ -59,9 +59,10 @@ public class CustomerPriorityAndQueueBasedCounterAllocator implements CounterAll
 					allocatedCounter = counter;
 				}
 			}
-			allocatedCounter.setQueueSize(minQueueSize+1);
+			allocatedCounter.setQueueSize(minQueueSize + 1);
 			return allocatedCounter;
-		}else {
+		}
+		else {
 			throw new BusinessException(BusinessException.ErrorCode.COUNTERS_NOT_INITIALIZED_CORRECTLY);
 		}
 	}
@@ -85,7 +86,8 @@ public class CustomerPriorityAndQueueBasedCounterAllocator implements CounterAll
 		return counters;
 	}
 
-	private Map<String, List<Counter>> addServiceCounterMapping(ServiceCounterMapping scm, Map<String, List<Counter>> serviceCounters) {
+	private Map<String, List<Counter>> addServiceCounterMapping(ServiceCounterMapping scm,
+			Map<String, List<Counter>> serviceCounters) {
 		String serviceName = scm.getService().getName();
 		List<Counter> counters = serviceCounters.get(serviceName);
 		if (counters == null) {

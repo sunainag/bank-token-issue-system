@@ -3,6 +3,8 @@ package com.abs.banking.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -34,6 +36,7 @@ public class TokenServiceImpl implements TokenService {
 	TokenQueueService tokenQueueService;
 
 	@Override
+	@Transactional
 	public Token issueToken(Customer customer, List<String> services) {
 		Token token = generateTokenNumber(customer);
 		assignTokenServices(token, services);
@@ -51,6 +54,7 @@ public class TokenServiceImpl implements TokenService {
 	}
 
 	@Override
+	@Transactional
 	public void comment(Integer tokenNumber, String comments) {
 		Token token = getTokenByNumber(tokenNumber);
 		token.getTokenServices().stream().filter(tsm -> tsm.getService().getId() == token.getCurrentService().getId())
@@ -80,7 +84,7 @@ public class TokenServiceImpl implements TokenService {
 	public Token save(Token token) {
 		return tokenRepo.save(token);
 	}
-	
+
 	//TODO
 	@Override
 	public boolean existsToken(Customer customer, List<String> services) {

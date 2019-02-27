@@ -1,4 +1,6 @@
-**Prerequisites:**
+# bank-token-issue-system
+
+# Prerequisites:
 ```
 Java 8
 
@@ -27,7 +29,7 @@ mvn clean install
 Run the application and go on http://localhost:8080/ for welcome page.
 ```
 
-**End points:**
+# End points:
 ```
 context path=/abs/bank
 ```
@@ -84,9 +86,9 @@ GET /counters/{counterNumber} Get the details of the counter with given 'counter
 GET /counters List all the counters for details
 ```
 
-**Token Generation Strategy**
+# Token Generation Strategy
 ```
-The current default implementation first identifies counters based on the customer type and then chooses the counter with the minimum queue size.
+The current default implementation first identifies counters based on the customer type and services offered by the counter, and then chooses the counter with the minimum queue size.
 While issuing a token, the systems identifies all the services that need to be served by this token (either user chooses multiple services or service that by itself is a multi-counter service). Once a token is marked as complete for the current service, token is queued at the next counter for the next service.
 ```
 **Token Sequence Generation**
@@ -94,7 +96,7 @@ While issuing a token, the systems identifies all the services that need to be s
 A Simple date based sequential generator has been used. The sequence gets reset at 00 hours everyday.
 ```
 
-**TODOs**
+**ToDo**
 ```
 Authorization: Role based access for updating tokens
 ```

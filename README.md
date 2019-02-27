@@ -9,15 +9,10 @@ Maven
 MySQL
 ```
 
-**Schema installation:**
-```
-Run the file schema.sql present in src/main/resources to set up the database. 
+**Schema design:**
 
-The tables created are: 
+![schema](https://user-images.githubusercontent.com/9528278/53480303-eef93a80-3aa0-11e9-98f2-6110d406621d.png)
 
-![Tables](https://github.com/sunainag/bank-token-issue-system/blob/master/images/Tables.png)
-
-```
 
 **From Editor (IntelliJ or Eclipse) import as Existing Maven Project and run it as Spring Boot App.**
 

@@ -1,12 +1,12 @@
 package com.abs.banking.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,8 +47,8 @@ public class CounterController {
 
 	@PatchMapping(value = "/counters/{counterNumber}/tokens/{tokenNumber}")
 	public ResponseEntity<?> commentOnToken(@PathVariable("tokenNumber") @NotNull Integer tokenNumber,
-			@RequestBody MultiValueMap<String,Object> updates) {
-		 String comments = updates.getFirst("comments").toString();
+			@RequestBody Map<String,Object> updates) {
+		 String comments = updates.get("comments").toString();
 		counterManager.setComments(tokenNumber, comments);
 		return ResponseEntity.ok("comments updated");
 	}

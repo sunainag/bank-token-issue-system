@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.abs.banking.exception.BusinessException;
-import com.abs.banking.exception.BusinessException.ErrorCode;
+import com.abs.banking.exception.InvalidTokenException;
+import com.abs.banking.exception.ServicesException;
 import com.abs.banking.model.Customer;
 import com.abs.banking.model.Services;
 import com.abs.banking.model.Token;
@@ -50,7 +50,7 @@ public class TokenServiceImpl implements TokenService {
 		if (!CollectionUtils.isEmpty(token))
 			return token.get(0); // expected unique column `number` in table `token`
 		else
-			throw new BusinessException(ErrorCode.INVALID_TOKEN);
+			throw new InvalidTokenException();
 	}
 
 	@Override
@@ -66,8 +66,7 @@ public class TokenServiceImpl implements TokenService {
 	public Services findServiceById(Long nextServiceId) {
 		if (serviceRepo.findById(nextServiceId).isPresent())
 			return serviceRepo.findById(nextServiceId).get();
-		else
-			throw new BusinessException(BusinessException.ErrorCode.SERVICE_NOT_FOUND);
+		throw new ServicesException();
 	}
 
 	@Override
@@ -108,7 +107,7 @@ public class TokenServiceImpl implements TokenService {
 		for (String name : tokenServices) {
 			Services service = findServiceByName(name);
 			if (service == null) {
-				throw new BusinessException(BusinessException.ErrorCode.SERVICE_NOT_FOUND);
+				throw new ServicesException();
 			}
 			tokenServiceList.add(new TokenServiceMapping(token, service));
 			while (service.getNextServiceId() != null) {

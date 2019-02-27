@@ -3,11 +3,11 @@ package com.abs.banking.service;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.abs.banking.dto.TokenRequest;
-import com.abs.banking.exception.BusinessException;
-import com.abs.banking.exception.BusinessException.ErrorCode;
 import com.abs.banking.model.Customer;
 import com.abs.banking.repository.CustomerRepository;
 
@@ -48,7 +48,8 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public Customer getByToken(TokenRequest tokenReq) {
 		if (tokenReq.getCustomer() == null)
-			throw new BusinessException(ErrorCode.CUSTOMER_NOT_FOUND);
+			throw new ResponseStatusException(
+			          HttpStatus.NOT_FOUND, "Customer Not Found");
 		Customer customer = findByMobile(tokenReq.getCustomer().getMobile());
 		if (customer == null) {
 			customer = create(tokenReq.getCustomer());

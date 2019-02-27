@@ -10,7 +10,9 @@ import java.util.concurrent.PriorityBlockingQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.abs.banking.exception.BusinessException;
+import com.abs.banking.exception.CounterNotAvailableException;
+import com.abs.banking.exception.InvalidTokenException;
+import com.abs.banking.exception.InvalidTokenQueueException;
 import com.abs.banking.model.Counter;
 import com.abs.banking.model.Services.ServicesType;
 import com.abs.banking.model.Token;
@@ -52,14 +54,14 @@ public class TokenBlockingQueueService implements TokenQueueService {
 																					// size
 																					// too
 				if (token.getCounterNumber() != counter.getNumber()) {
-					throw new BusinessException(BusinessException.ErrorCode.INVALID_TOKEN);
+					throw new InvalidTokenException();
 					// or token.setCurrentCounter(counter);
 				}
 
 				return token;
 			}
 			else {
-				throw new BusinessException(BusinessException.ErrorCode.TOKEN_NOT_ASSIGNED_TO_THIS_COUNTER);
+				throw new InvalidTokenQueueException();
 			}
 		}
 		catch (InterruptedException e) {
@@ -130,12 +132,12 @@ public class TokenBlockingQueueService implements TokenQueueService {
 
 	private Counter addToTokenQueue(Token token) throws InterruptedException {
 		if (token == null || token.isInactive()) {
-			throw new BusinessException(BusinessException.ErrorCode.INVALID_TOKEN_STATE);
+			throw new InvalidTokenException();
 		}
 
 		Counter counter = counterAllocator.allocate(token);
 		if (counter == null)
-			throw new BusinessException(BusinessException.ErrorCode.COUNTER_NOT_ASSIGNED_TO_THIS_TOKEN);
+			throw new CounterNotAvailableException();
 		token.setCurrentCounter(counter);
 		tokenRepo.save(token);
 		Thread.sleep(1000);

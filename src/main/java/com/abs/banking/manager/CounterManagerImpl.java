@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import com.abs.banking.exception.BusinessException;
+import com.abs.banking.exception.InvalidCounterException;
 import com.abs.banking.model.Counter;
 import com.abs.banking.model.Token;
 import com.abs.banking.model.Token.StatusCode;
@@ -50,7 +50,7 @@ public class CounterManagerImpl implements CounterManager {
 		Counter counter = counterService.getCounter(counterNumber);
 		if (counter != null)
 			return ResponseEntity.status(HttpStatus.OK).body(counter);
-		throw new BusinessException(BusinessException.ErrorCode.INVALID_COUNTER_ID);
+		throw new InvalidCounterException();
 	}
 
 	@Override

@@ -2,11 +2,9 @@ package com.abs.bank.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -42,16 +40,22 @@ public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 	@Test
 	public void getActiveTokens() throws Exception {
 		MvcResult mvcResult = mvc
-				.perform(MockMvcRequestBuilders.get(uri + tokenUri).accept(MediaType.APPLICATION_JSON_VALUE))
+				.perform(MockMvcRequestBuilders.get(uri + tokenUri + "/5").accept(MediaType.APPLICATION_JSON_VALUE))
 				.andReturn();
 
 		int status = mvcResult.getResponse().getStatus();
-		assertEquals(200, status);
-		String content = mvcResult.getResponse().getContentAsString();
-		Map<Integer, List<Integer>> activeTokensPerCounter = super.mapFromJson(content, Map.class);
-		System.out.println(activeTokensPerCounter);
-		if (activeTokensPerCounter.get(1) != null)
-			assertTrue(activeTokensPerCounter.get(1).get(0).intValue() == 1);
+		assertEquals(400, status);
+	}
+
+	// exception handler test case
+	@Test // (expected = InvalidTokenException.class)
+	public void whenInvalidTokenNumber_thenException() throws Exception {
+		MvcResult mvcResult = mvc
+				.perform(MockMvcRequestBuilders.get(uri + tokenUri + "/5").accept(MediaType.APPLICATION_JSON_VALUE))
+				.andReturn();
+
+		int status = mvcResult.getResponse().getStatus();
+		assertEquals(400, status);
 	}
 
 	// PUT API test case
@@ -89,42 +93,38 @@ public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 	}
 
 	// GET API test case
-	/*@Test
-	public void getNextTokenInQueue() throws Exception {
-		int counterNumber = this.counterNumber;
-		String getTokenUri = "/" + counterNumber + "/token";
-		MvcResult mvcResult = mvc.perform(
-				MockMvcRequestBuilders.get(uri + counterUri + getTokenUri).accept(MediaType.APPLICATION_JSON_VALUE))
-				.andReturn();
-	
-		int status = mvcResult.getResponse().getStatus();
-		assertEquals(200, status);
-		String content = mvcResult.getResponse().getContentAsString();
-		Token tokenServed = super.mapFromJson(content, Token.class);
-		if (tokenServed != null) {
-			assertEquals(tokenServed.getCounterNumber().toString(), String.valueOf(counterNumber));
-			this.tokenNumber=tokenServed.getNumber();
-		}
-	}*/
+	/*
+	 * @Test public void getNextTokenInQueue() throws Exception { int counterNumber
+	 * = this.counterNumber; String getTokenUri = "/" + counterNumber + "/token";
+	 * MvcResult mvcResult = mvc.perform( MockMvcRequestBuilders.get(uri +
+	 * counterUri + getTokenUri).accept(MediaType.APPLICATION_JSON_VALUE))
+	 * .andReturn();
+	 * 
+	 * int status = mvcResult.getResponse().getStatus(); assertEquals(200, status);
+	 * String content = mvcResult.getResponse().getContentAsString(); Token
+	 * tokenServed = super.mapFromJson(content, Token.class); if (tokenServed !=
+	 * null) { assertEquals(tokenServed.getCounterNumber().toString(),
+	 * String.valueOf(counterNumber)); this.tokenNumber=tokenServed.getNumber(); } }
+	 */
 
 	// PUT API test case
 	@Test
 	public void completeToken() throws Exception {
-		/*int counterNumber = this.counterNumber;
-		int tokenNumber = this.tokenNumber!=0?this.tokenNumber:1;
-		String putUri = "/" + counterNumber + "/tokens/"+tokenNumber+"/complete";
-		Product product = new Product();
-		product.setName("Lemon");
-		
-		String inputJson = super.mapToJson(product);
-		MvcResult mvcResult = mvc.perform(
-				MockMvcRequestBuilders.put(uri+counterUri+putUri).contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson))
-				.andReturn();
-		
-		int status = mvcResult.getResponse().getStatus();
-		assertEquals(200, status);
-		String content = mvcResult.getResponse().getContentAsString();
-		assertEquals(content, "Product is updated successsfully");*/
+		/*
+		 * int counterNumber = this.counterNumber; int tokenNumber =
+		 * this.tokenNumber!=0?this.tokenNumber:1; String putUri = "/" + counterNumber +
+		 * "/tokens/"+tokenNumber+"/complete"; Product product = new Product();
+		 * product.setName("Lemon");
+		 * 
+		 * String inputJson = super.mapToJson(product); MvcResult mvcResult =
+		 * mvc.perform(
+		 * MockMvcRequestBuilders.put(uri+counterUri+putUri).contentType(MediaType.
+		 * APPLICATION_JSON_VALUE).content(inputJson)) .andReturn();
+		 * 
+		 * int status = mvcResult.getResponse().getStatus(); assertEquals(200, status);
+		 * String content = mvcResult.getResponse().getContentAsString();
+		 * assertEquals(content, "Product is updated successsfully");
+		 */
 	}
 
 	private Customer createCustomer(String mobile, String name, CustomerType type) {

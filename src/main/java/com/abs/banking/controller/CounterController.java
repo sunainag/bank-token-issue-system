@@ -53,7 +53,7 @@ public class CounterController {
 		return ResponseEntity.ok("comments updated");
 	}
 
-	@PostMapping(value = "/counters/{counterNumber}/tokens/{tokenNumber}/cancel")
+	@PatchMapping(value = "/counters/{counterNumber}/tokens/{tokenNumber}/cancel")
 	public ResponseEntity<?> cancelToken(@PathVariable("tokenNumber") @NotNull Integer tokenNumber) {
 		counterManager.updateTokenStatusById(tokenNumber, tokenNumber, Token.StatusCode.CANCELLED);
 		return ResponseEntity.ok("Token "+tokenNumber+" cancelled");

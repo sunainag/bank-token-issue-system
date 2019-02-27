@@ -11,7 +11,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import com.abs.banking.exception.BusinessException;
+import com.abs.banking.exception.CounterNotAvailableException;
 import com.abs.banking.model.Counter;
 import com.abs.banking.model.Customer;
 import com.abs.banking.model.ServiceCounterMapping;
@@ -63,7 +63,7 @@ public class CustomerPriorityAndQueueBasedCounterAllocator implements CounterAll
 			return allocatedCounter;
 		}
 		else {
-			throw new BusinessException(BusinessException.ErrorCode.COUNTERS_NOT_INITIALIZED_CORRECTLY);
+			throw new CounterNotAvailableException();
 		}
 	}
 
@@ -81,7 +81,7 @@ public class CustomerPriorityAndQueueBasedCounterAllocator implements CounterAll
 				break;
 			}
 		default:
-			throw new BusinessException(BusinessException.ErrorCode.COUNTERS_NOT_INITIALIZED_CORRECTLY);
+			throw new CounterNotAvailableException();
 		}
 		return counters;
 	}

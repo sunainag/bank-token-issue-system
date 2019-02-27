@@ -40,9 +40,9 @@ GET /tokens Gives a counter wise list of active tokens
 GET /tokens/{tokenNumber} Gives details for a particular token number passed
 ```
 ```
-POST /tokens Generates a new token, takes customer and service(s) in TokenRequest as Request body
+PUT /tokens Generates a new token, takes customer and service(s) in TokenRequest as Request body
 
-example: for POST request: http://localhost:8080/abs/bank/tokens
+example: for PUT request: http://localhost:8080/abs/bank/tokens
 
 Request Body: 
 
@@ -69,13 +69,13 @@ Request Body:
 ```
 **CounterController:**
 ```
-PUT /tokens/{tokenNumber}/cancel Cancels an active token
+POST /tokens/{tokenNumber}/cancel Cancels an active token
 ```
 ```
-PUT /tokens/{tokenNumber}/complete Marks a service token a complete, in case the token is a multi-counter token, it gets queued at the next counter
+POST /tokens/{tokenNumber}/complete Marks a service token a complete, in case the token is a multi-counter token, it gets queued at the next counter
 ```
 ```
-PUT /tokens/{tokenNumber}/comment Records a comment against the current service of the token
+POST /tokens/{tokenNumber}/comment Records a comment against the current service of the token
 ```
 ```
 GET /counters/{counterNumber} Get the details of the counter with given 'counterNumber'

@@ -9,14 +9,10 @@ Maven
 MySQL
 ```
 
-**Tables :**
+**Schema design:**
 
-![tables](https://user-images.githubusercontent.com/9528278/53478960-07b42100-3a9e-11e9-8175-62a6f62e8501.png)
+![schema](https://user-images.githubusercontent.com/9528278/53480303-eef93a80-3aa0-11e9-98f2-6110d406621d.png)
 
-```
-Run the file schema.sql present in src/main/resources to set up the database. 
-
-```
 
 **From Editor (IntelliJ or Eclipse) import as Existing Maven Project and run it as Spring Boot App.**
 
@@ -102,3 +98,4 @@ A Simple date based sequential generator has been used. The sequence gets reset 
 ```
 Authorization: Role based access for updating tokens
 ```
+

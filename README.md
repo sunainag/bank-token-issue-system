@@ -15,7 +15,7 @@ Run the file schema.sql present in src/main/resources to set up the database.
 
 The tables created are: 
 
-![Tables](https://github.com/sunainag/bank-token-issue-system/blob/new-design/images/Tables.png)
+![Tables](https://github.com/sunainag/bank-token-issue-system/blob/master/images/Tables.png)
 
 ```
 

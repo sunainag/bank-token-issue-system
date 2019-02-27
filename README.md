@@ -40,9 +40,9 @@ GET /tokens Gives a counter wise list of active tokens
 GET /tokens/{tokenNumber} Gives details for a particular token number passed
 ```
 ```
-PUT /tokens Generates a new token, takes customer and service(s) in TokenRequest as Request body
+POST /tokens Generates a new token, takes customer and service(s) in TokenRequest as Request body
 
-example: for PUT request: http://localhost:8080/abs/bank/tokens
+example: for POST request: http://localhost:8080/abs/bank/tokens
 
 Request Body: 
 

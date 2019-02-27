@@ -13,8 +13,10 @@ MySQL
 ```
 Run the file schema.sql present in src/main/resources to set up the database. 
 
-The tables created are: customer, address, counter, service, service_counter_mapping, token and token_service_mapping
-![alt tag](https://github.com/sunainag/bank-token-issue-system/tree/new-design/images/Tables.png)
+The tables created are: 
+
+![Tables](https://github.com/sunainag/bank-token-issue-system/blob/new-design/images/Tables.png)
+
 ```
 
 **From Editor (IntelliJ or Eclipse) import as Existing Maven Project and run it as Spring Boot App.**

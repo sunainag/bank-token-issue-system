@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +20,7 @@ import com.abs.banking.model.Counter;
 import com.abs.banking.model.Counter.Priority;
 import com.abs.banking.model.Customer;
 import com.abs.banking.model.Customer.CustomerType;
+import com.abs.banking.model.Token;
 
 public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 
@@ -93,38 +96,44 @@ public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 	}
 
 	// GET API test case
-	/*
-	 * @Test public void getNextTokenInQueue() throws Exception { int counterNumber
-	 * = this.counterNumber; String getTokenUri = "/" + counterNumber + "/token";
-	 * MvcResult mvcResult = mvc.perform( MockMvcRequestBuilders.get(uri +
-	 * counterUri + getTokenUri).accept(MediaType.APPLICATION_JSON_VALUE))
-	 * .andReturn();
-	 * 
-	 * int status = mvcResult.getResponse().getStatus(); assertEquals(200, status);
-	 * String content = mvcResult.getResponse().getContentAsString(); Token
-	 * tokenServed = super.mapFromJson(content, Token.class); if (tokenServed !=
-	 * null) { assertEquals(tokenServed.getCounterNumber().toString(),
-	 * String.valueOf(counterNumber)); this.tokenNumber=tokenServed.getNumber(); } }
-	 */
-
-	// PUT API test case
 	@Test
-	public void completeToken() throws Exception {
-		/*
-		 * int counterNumber = this.counterNumber; int tokenNumber =
-		 * this.tokenNumber!=0?this.tokenNumber:1; String putUri = "/" + counterNumber +
-		 * "/tokens/"+tokenNumber+"/complete"; Product product = new Product();
-		 * product.setName("Lemon");
-		 * 
-		 * String inputJson = super.mapToJson(product); MvcResult mvcResult =
-		 * mvc.perform(
-		 * MockMvcRequestBuilders.put(uri+counterUri+putUri).contentType(MediaType.
-		 * APPLICATION_JSON_VALUE).content(inputJson)) .andReturn();
-		 * 
-		 * int status = mvcResult.getResponse().getStatus(); assertEquals(200, status);
-		 * String content = mvcResult.getResponse().getContentAsString();
-		 * assertEquals(content, "Product is updated successsfully");
-		 */
+	public void getNextTokenInQueue() throws Exception {
+		int counterNumber = this.counterNumber;
+		String getTokenUri = "/" + counterNumber + "/token";
+		MvcResult mvcResult = mvc.perform(
+				MockMvcRequestBuilders.get(uri + counterUri + getTokenUri).accept(MediaType.APPLICATION_JSON_VALUE))
+				.andReturn();
+
+		int status = mvcResult.getResponse().getStatus();
+		assertEquals(200, status);
+		String content = mvcResult.getResponse().getContentAsString();
+		Token tokenServed = super.mapFromJson(content, Token.class);
+		if (tokenServed != null) {
+			assertEquals(tokenServed.getCounterNumber().toString(), String.valueOf(counterNumber));
+			this.tokenNumber = tokenServed.getNumber();
+		}
+	}
+
+	// PATCH API test case
+	@Test
+	public void comment() throws Exception {
+
+		int counterNumber = this.counterNumber;
+		int tokenNumber = this.tokenNumber != 0 ? this.tokenNumber : 1;
+		String patchUri = "/" + counterNumber + "/tokens/" + tokenNumber;
+
+		Map<String, Object> updates=new HashMap<>();
+		updates.put("comments", "Bring papers");
+		
+		String inputJson = super.mapToJson(updates);
+		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.patch(uri + counterUri + patchUri)
+				.contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
+
+		int status = mvcResult.getResponse().getStatus();
+		assertEquals(200, status);
+		String content = mvcResult.getResponse().getContentAsString();
+		assertEquals(content, "comments updated");
+
 	}
 
 	private Customer createCustomer(String mobile, String name, CustomerType type) {

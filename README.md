@@ -9,12 +9,10 @@ Maven
 MySQL
 ```
 
-**Schema installation:**
-```
-Run the file schema.sql present in src/main/resources to set up the database. 
+**Schema design:**
 
-The tables created are: customer, address, counter, service, service_counter_mapping, token and token_service_mapping
-```
+![schema](https://user-images.githubusercontent.com/9528278/53480303-eef93a80-3aa0-11e9-98f2-6110d406621d.png)
+
 
 **From Editor (IntelliJ or Eclipse) import as Existing Maven Project and run it as Spring Boot App.**
 
@@ -100,3 +98,4 @@ A Simple date based sequential generator has been used. The sequence gets reset 
 ```
 Authorization: Role based access for updating tokens
 ```
+

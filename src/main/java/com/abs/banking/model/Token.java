@@ -19,7 +19,7 @@ import javax.validation.constraints.NotNull;
 /**
  * @author sunainag
  * 
- *         Token generated for the customer on request
+ * JPA Entity for Token generated for the customer on request
  *
  */
 @Entity

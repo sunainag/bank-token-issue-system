@@ -1,4 +1,4 @@
-package com.abs.banking.exception;
+package com.abs.banking.error;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -8,8 +8,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.abs.banking.exception.CounterNotAvailableException;
+import com.abs.banking.exception.InvalidCounterException;
+import com.abs.banking.exception.InvalidTokenException;
+import com.abs.banking.exception.InvalidTokenQueueException;
+import com.abs.banking.exception.ServicesException;
+
 @ControllerAdvice
-public class BankOperationsExceptionHandler extends ResponseEntityExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private static final String COUNTERS_UNAVAILABLE = "Counters are unavailable due to technial issue";
 	private static final String INVALID_TOKEN = "Please pass a valid token. Either the token is not active or the token number is not valid";

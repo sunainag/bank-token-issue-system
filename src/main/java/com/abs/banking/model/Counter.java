@@ -13,6 +13,12 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+/**
+ * @author sunainag
+ * 
+ * JPA Entity for counter at the ABS bank
+ *
+ */
 @Entity
 @Table(name = "counter")
 public class Counter {

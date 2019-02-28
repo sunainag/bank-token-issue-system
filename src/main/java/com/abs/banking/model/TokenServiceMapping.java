@@ -37,33 +37,23 @@ public class TokenServiceMapping {
 
 	private String comments;
 
+	/**********Getters******************/
 	public long getId() {
 		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
 	}
 
 	public Services getService() {
 		return service;
 	}
 
-	public void setService(Services service) {
-		this.service = service;
-	}
-
 	public Token getToken() {
 		return token;
-	}
-
-	public void setToken(Token token) {
-		this.token = token;
 	}
 
 	public String getComments() {
 		return comments;
 	}
+	/****************************/
 
 	public void setComments(String comments) {
 		this.comments = comments;

@@ -53,17 +53,7 @@ public class Services {
 	@OneToMany(mappedBy = "currentService")
 	private List<Token> token;
 
-	public Services() {
-	}
-
-	private Services(ServicesBuilder builder) {
-		this();
-		this.name = builder.name;
-		this.type = builder.type;
-		this.nextServiceId = builder.nextServiceId;
-		this.counters = builder.counters;
-	}
-
+	/********Getters************/
 	public long getId() {
 		return id;
 	}
@@ -84,42 +74,13 @@ public class Services {
 		return counters;
 	}
 
+	public List<Token> getToken() {
+		return token;
+	}
+	/****************************/
+	
 	public void setType(ServicesType type) {
 		this.type = type;
 	}
 
-	public List<Token> getToken() {
-		return token;
-	}
-
-	public void setToken(List<Token> token) {
-		this.token = token;
-	}
-
-	public static class ServicesBuilder {
-
-		private String name;
-		private ServicesType type;
-		private Long nextServiceId;
-		private List<Counter> counters;
-
-		public ServicesBuilder(String name, ServicesType type) {
-			this.name = name;
-			this.type = type;
-		}
-
-		public ServicesBuilder nextService(Long nextServiceId) {
-			this.nextServiceId = nextServiceId;
-			return this;
-		}
-
-		public ServicesBuilder counters(List<Counter> counters) {
-			this.counters = counters;
-			return this;
-		}
-
-		public Services build() {
-			return new Services(this);
-		}
-	}
 }

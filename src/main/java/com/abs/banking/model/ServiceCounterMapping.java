@@ -33,36 +33,21 @@ public class ServiceCounterMapping {
 	@Enumerated(EnumType.STRING)
 	private Customer.CustomerType type;
 
+	/********Getters************/
 	public long getId() {
 		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
 	}
 
 	public Services getService() {
 		return service;
 	}
 
-	public void setService(Services service) {
-		this.service = service;
-	}
-
 	public Counter getCounter() {
 		return counter;
-	}
-
-	public void setCounter(Counter counter) {
-		this.counter = counter;
 	}
 
 	public Customer.CustomerType getType() {
 		return type;
 	}
-
-	public void setType(Customer.CustomerType type) {
-		this.type = type;
-	}
-
+	/****************************/
 }

@@ -53,6 +53,7 @@ public class Counter {
 		this.queueSize = builder.queueSize;
 	}
 
+	/********Getters************/
 	public Integer getId() {
 		return id;
 	}
@@ -69,16 +70,14 @@ public class Counter {
 		return queueSize;
 	}
 
-	public void setQueueSize(int queueSize) {
-		this.queueSize = queueSize;
-	}
-
 	public Collection<Token> getToken() {
 		return tokens;
 	}
-
-	public void setToken(Collection<Token> token) {
-		this.tokens = token;
+	
+	/*******************************/
+	
+	public void setQueueSize(int queueSize) {
+		this.queueSize = queueSize;
 	}
 
 	@Override
@@ -86,6 +85,8 @@ public class Counter {
 		return "Counter [number=" + number + ", priority=" + priority + ", queueSize=" + queueSize + "]";
 	}
 
+	/************Builder class*************/
+	
 	public static class CounterBuilder {
 
 		private int number;

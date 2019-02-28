@@ -70,60 +70,33 @@ public class Token {
 		this.created = new Date();
 	}
 
+	/********Getters************/
 	public int getNumber() {
 		return number;
-	}
-
-	public void setNumber(int number) {
-		this.number = number;
 	}
 
 	public Customer getCustomer() {
 		return customer;
 	}
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
-
 	public List<TokenServiceMapping> getTokenServices() {
 		return tokenServices;
-	}
-
-	public void setTokenServices(List<TokenServiceMapping> tokenServices) {
-		this.tokenServices = tokenServices;
 	}
 
 	public Counter getCurrentCounter() {
 		return currentCounter;
 	}
 
-	public void setCurrentCounter(Counter currentCounter) {
-		this.currentCounter = currentCounter;
-	}
-
 	public Services getCurrentService() {
 		return currentService;
-	}
-
-	public void setCurrentService(Services currentService) {
-		this.currentService = currentService;
 	}
 
 	public StatusCode getStatusCode() {
 		return statusCode;
 	}
 
-	public void setStatusCode(StatusCode statusCode) {
-		this.statusCode = statusCode;
-	}
-
 	public Date getCreated() {
 		return created;
-	}
-
-	public void setCreated(Date created) {
-		this.created = created;
 	}
 
 	public boolean isInactive() {
@@ -136,5 +109,24 @@ public class Token {
 		else
 			return new Integer(0);
 	}
+	/****************************/
+	
+	/********Setters************/
+	public void setTokenServices(List<TokenServiceMapping> tokenServices) {
+		this.tokenServices = tokenServices;
+	}
+	
+	public void setCurrentCounter(Counter currentCounter) {
+		this.currentCounter = currentCounter;
+	}
 
+	public void setCurrentService(Services currentService) {
+		this.currentService = currentService;
+	}
+	
+	public void setStatusCode(StatusCode statusCode) {
+		this.statusCode = statusCode;
+	}
+	/****************************/
+	
 }

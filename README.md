@@ -112,5 +112,8 @@ A Simple date based sequential generator has been used. The sequence gets reset 
 **ToDo**
 ```
 Authorization: Role based access for updating tokens
+Token serve ratio based on premium or regular customers
+Swagger implementation
+Logger
 ```
 

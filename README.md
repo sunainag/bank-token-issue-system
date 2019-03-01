@@ -9,5 +9,5 @@ Maven
 MySQL
 ```
 
-# Please visit branch 'new-design' for complete functional code.
+## Please visit branch 'new-design' for complete functional code.
 

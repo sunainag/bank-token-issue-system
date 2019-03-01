@@ -9,6 +9,7 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.abs.banking.exception.CounterNotAvailableException;
 import com.abs.banking.exception.InvalidTokenException;
@@ -33,32 +34,30 @@ public class TokenBlockingQueueService implements TokenQueueService {
 
 	BlockingQueue<Token> tokenQueue;
 
-	// map of counter numbers : queue of tokens
 	Map<Integer, PriorityBlockingQueue<Token>> counterWiseQueueMap;
 
+	/* 
+	 * Issued token is added to the counter queue
+	 * Initialize the queue, if not done before
+	 */
 	@Override
 	public void putInQueue(Token token) {
 		initialize();
 		tokenQueue.add(token);
 	}
 
+	/* 
+	 * The counter requests for a token from the respective counter queue.
+	 * Reduce the queue size, once the token is removed from it.
+	 */
 	@Override
 	public Token pollNextInQueue(Counter counter) {
 		try {
-			// check if this token is alloted this counter and set status acc to
-			// the token
-			// TODO: also add the priority to premium customers logic
-			if (counterWiseQueueMap.containsKey(counter.getNumber())) {
-				Token token = counterWiseQueueMap.get(counter.getNumber()).take();// reduced
-																					// queue
-																					// size
-																					// too
-				if (token.getCounterNumber() != counter.getNumber()) {
-					throw new InvalidTokenException();
-					// or token.setCurrentCounter(counter);
-				}
-
-				return token;
+			if (!CollectionUtils.isEmpty(counterWiseQueueMap) && counterWiseQueueMap.containsKey(counter.getNumber())) {
+				PriorityBlockingQueue<Token> queue = counterWiseQueueMap.get(counter.getNumber());
+				Token token = queue.take();
+				counter.setQueueSize(counter.getQueueSize()-1);
+				return tokenRepo.save(token);
 			}
 			else {
 				throw new InvalidTokenQueueException();
@@ -73,7 +72,7 @@ public class TokenBlockingQueueService implements TokenQueueService {
 	/*
 	 * Set status for next queue to be IN_PROGRESS; Already removed from previous
 	 * queue; when counter gets the token from queue @see this.pollNextInQueue(...)
-	 * ; Add to the token queue with highest priority, as this token is already in
+	 * Add to the token queue with highest priority, as this token is already in
 	 * process from previous queue;
 	 * 
 	 */
@@ -143,7 +142,7 @@ public class TokenBlockingQueueService implements TokenQueueService {
 		Thread.sleep(1000);
 		PriorityBlockingQueue<Token> counterQueue = counterWiseQueueMap.get(counter.getNumber());
 		if (counterQueue == null) {
-			counterQueue = new PriorityBlockingQueue<>(11, new TokenPriorityComparator());
+			counterQueue = new PriorityBlockingQueue<>(10, new TokenPriorityComparator());
 		}
 		counterQueue.put(token);
 		counterWiseQueueMap.put(counter.getNumber(), counterQueue);

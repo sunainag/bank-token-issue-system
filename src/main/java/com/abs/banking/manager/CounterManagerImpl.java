@@ -60,7 +60,7 @@ public class CounterManagerImpl implements CounterManager {
 
 	@Override
 	public ResponseEntity<Integer> updateTokenStatusById(Integer counterNumber, Integer tokenNumber,
-			StatusCode newTokenStatus) {
+			String newTokenStatus) {
 		if (validateCounterForToken(counterNumber, tokenNumber)) {
 			resolveToken(tokenNumber, newTokenStatus);
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(tokenNumber);
@@ -68,13 +68,13 @@ public class CounterManagerImpl implements CounterManager {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(tokenNumber);
 	}
 
-	private Token resolveToken(Integer tokenNumber, StatusCode newTokenStatus) {
+	private Token resolveToken(Integer tokenNumber, String newTokenStatus) {
 		Token token = getToken(tokenNumber);
-		token.setStatusCode(newTokenStatus);
+		token.setStatusCode(StatusCode.valueOf(newTokenStatus));
 		tokenService.save(token);
 
-		if (StatusCode.COMPLETED.equals(newTokenStatus)) {
-			return resolveMultiServiceTokenIfExists(token, newTokenStatus);
+		if (StatusCode.COMPLETED.equals(token.getStatusCode())) {
+			return resolveMultiServiceTokenIfExists(token);
 		}
 		return token;
 	}
@@ -87,7 +87,7 @@ public class CounterManagerImpl implements CounterManager {
 	 * @param newTokenStatus
 	 * @return Token new token entry created for next service 
 	 */
-	private Token resolveMultiServiceTokenIfExists(Token token, StatusCode newTokenStatus) {
+	private Token resolveMultiServiceTokenIfExists(Token token) {
 		token = counterService.assignNextService(token);
 		if (token.getCurrentService() != null) {
 			Token newToken = token;

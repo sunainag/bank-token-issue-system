@@ -6,11 +6,12 @@ import java.util.Map;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.abs.banking.manager.CounterManager;
 import com.abs.banking.model.Counter;
 import com.abs.banking.model.Token;
-import com.abs.banking.model.Token.StatusCode;
 
 @RestController
 @RequestMapping(value = "/abs/bank")
@@ -46,22 +46,19 @@ public class CounterController {
 	}
 
 	@PatchMapping(value = "/counters/{counterNumber}/tokens/{tokenNumber}")
-	public ResponseEntity<?> commentOnToken(@PathVariable("tokenNumber") @NotNull Integer tokenNumber,
-			@RequestBody Map<String,Object> updates) {
-		 String comments = updates.get("comments").toString();
-		counterManager.setComments(tokenNumber, comments);
-		return ResponseEntity.ok("comments updated");
-	}
-
-	@PatchMapping(value = "/counters/{counterNumber}/tokens/{tokenNumber}/cancel")
-	public ResponseEntity<?> cancelToken(@PathVariable("tokenNumber") @NotNull Integer tokenNumber) {
-		counterManager.updateTokenStatusById(tokenNumber, tokenNumber, Token.StatusCode.CANCELLED);
-		return ResponseEntity.ok("Token "+tokenNumber+" cancelled");
-	}
-
-	@PostMapping(value = "counters/{counterNumber}/tokens/{tokenNumber}/complete")
-	public ResponseEntity<?> completeToken(@PathVariable("counterNumber") Integer counterNumber,
-			@PathVariable("tokenNumber") Integer tokenNumber) {
-		return counterManager.updateTokenStatusById(counterNumber, tokenNumber, StatusCode.COMPLETED);
+	public ResponseEntity<?> performTokenAction(@PathVariable("tokenNumber") @NotNull Integer tokenNumber,
+			@RequestBody Map<String, Object> updates) {
+		String comments = updates.get("comments").toString();
+		String status = updates.get("action").toString();
+		
+		if (!StringUtils.isEmpty(comments)) {
+			counterManager.setComments(tokenNumber, comments);
+			return ResponseEntity.ok("comments updated");
+		}
+		if(!StringUtils.isEmpty(status)) {
+			counterManager.updateTokenStatusById(tokenNumber, tokenNumber, status);
+			return ResponseEntity.ok("New token status for token " + tokenNumber + " is " +status);
+		}
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You may comment/cancel/complete the token");
 	}
 }

@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 
 import com.abs.banking.model.Counter;
 import com.abs.banking.model.Token;
-import com.abs.banking.model.Token.StatusCode;
 
 public interface CounterManager {
 
@@ -18,7 +17,7 @@ public interface CounterManager {
 
 	void setComments(@NotNull Integer tokenNumber, String comments);
 
-	ResponseEntity<Integer> updateTokenStatusById(Integer counterNumber, Integer tokenNumber, StatusCode tokenStatus);
+	ResponseEntity<Integer> updateTokenStatusById(Integer counterNumber, Integer tokenNumber, String tokenStatus);
 
 	Token getNextTokenFromQueue(Integer counterNumber);
 

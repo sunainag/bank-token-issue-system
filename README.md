@@ -41,7 +41,7 @@ GET /tokens Gives a counter wise list of active tokens
 GET /tokens/{tokenNumber} Gives details for a particular token number passed
 ```
 ```
-POST /tokens Generates a new token, takes customer and service(s) in TokenRequest as Request body
+POST /tokens Generates/issues a new token, takes customer details and service(s) requested in TokenRequest as Request body
 
 example: for POST request: http://localhost:8080/abs/bank/tokens
 
@@ -69,20 +69,34 @@ Request Body:
 
 ```
 **CounterController:**
+
 ```
-POST /tokens/{tokenNumber}/cancel Cancels an active token
-```
-```
-POST /tokens/{tokenNumber}/complete Marks a service token a complete, in case the token is a multi-counter token, it gets queued at the next counter
+GET /counters/{counterNumber}/token Get the next token from the counter queue for respective counterNumber.
 ```
 ```
-PATCH /tokens/{tokenNumber} Records a comment against the current service of the token
+GET /counters List all the counters for details
 ```
 ```
 GET /counters/{counterNumber} Get the details of the counter with given 'counterNumber'
 ```
-```
-GET /counters List all the counters for details
+``` 
+PATCH /counters/{counterNumber}/tokens/{tokenNumber} 
+
+Comment on the respective token number for the current service at the given counter. It can be done by sending a map of updates with key as "comments" to make changes to the token object as follows:
+
+Request Body: 
+		{"comments":"Bring papers"}
+
+Cancel an active token number at the given counter. It can be done by sending a map of updates with key as "action" and value as "CANCELLED":
+
+Request Body: 
+		{"action":"CANCELLED"}
+		
+Complete an active token number at the given counter. It can be done by sending a map of updates with key as "action" and value as "COMPLETED":
+
+Request Body: 
+		{"action":"COMPLETED"}
+		
 ```
 
 # Token Generation Strategy

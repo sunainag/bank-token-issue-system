@@ -28,7 +28,7 @@ If you run the spring boot application, the hibernate tables are created and dat
 Run the application and go on http://localhost:8080/ for welcome page.
 ```
 
-# End points:
+# API endpoint:
 ```
 context path=/abs/bank
 ```

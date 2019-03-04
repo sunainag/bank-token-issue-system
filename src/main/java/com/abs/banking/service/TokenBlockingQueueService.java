@@ -7,7 +7,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -24,8 +26,11 @@ import com.abs.banking.util.counter.allocator.CounterAllocator;
 @Service
 public class TokenBlockingQueueService implements TokenQueueService {
 
+	@Value(("${token.priority.serve.ratio:2:1}"))
+	private String priorityServeRatio;
+	
 	@Autowired
-	CounterAllocator counterAllocator;
+	CounterAllocator counterAllocator;	
 
 	@Autowired
 	TokenRepository tokenRepo;
@@ -35,6 +40,8 @@ public class TokenBlockingQueueService implements TokenQueueService {
 	BlockingQueue<Token> tokenQueue;
 
 	Map<Integer, PriorityBlockingQueue<Token>> counterWiseQueueMap;
+	
+	CircularFifoQueue recentlyServed;
 
 	/* 
 	 * Issued token is added to the counter queue
@@ -121,12 +128,17 @@ public class TokenBlockingQueueService implements TokenQueueService {
 
 	private void initialize() {
 		if (tokenQueue == null) {
+			recentlyServed=new CircularFifoQueue<>(getPremiumServiceRatio());
 			tokenQueue = new LinkedBlockingQueue<>();
 			counterWiseQueueMap = new ConcurrentHashMap<>();
 			producer = new TokenQueueConsumer();
 			producer.start();
 
 		}
+	}
+
+	private Integer getPremiumServiceRatio() {
+		return Integer.valueOf(priorityServeRatio.split(":")[0]);
 	}
 
 	private Counter addToTokenQueue(Token token) throws InterruptedException {

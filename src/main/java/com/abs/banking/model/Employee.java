@@ -9,6 +9,10 @@ import javax.persistence.Id;
 @Entity
 public class Employee {
 
+	enum Role{
+		MANAGER, OPERATOR
+	}
+	
 	@Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
@@ -21,6 +25,8 @@ public class Employee {
     private long salary;
     @Column
     private int age;
+    @Column
+    private Role role;
 	
     public long getId() {
 		return id;
@@ -49,5 +55,13 @@ public class Employee {
 	}
 	public void setAge(int age) {
 		this.age = age;
+	}
+
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
 	}
 }

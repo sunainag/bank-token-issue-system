@@ -83,4 +83,8 @@ public class Services {
 		this.type = type;
 	}
 
+	public void setToken(List<Token> token) {
+		this.token = token;
+	}
+
 }

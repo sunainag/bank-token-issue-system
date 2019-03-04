@@ -2,6 +2,7 @@ package com.abs.banking.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -43,6 +45,9 @@ public class Counter {
 	@OneToMany(mappedBy = "currentCounter")
 	private Collection<Token> tokens = new ArrayList<Token>();
 
+	@ManyToMany(mappedBy = "counters")
+	private List<Services> services;
+	
 	public Counter() {
 	}
 
@@ -74,10 +79,18 @@ public class Counter {
 		return tokens;
 	}
 	
+	public List<Services> getServices() {
+		return services;
+	}
+	
 	/*******************************/
 	
 	public void setQueueSize(int queueSize) {
 		this.queueSize = queueSize;
+	}
+
+	public void setServices(List<Services> services) {
+		this.services = services;
 	}
 
 	@Override

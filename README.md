@@ -24,7 +24,7 @@ mvn clean install
 
 **Usage:**
 ```
-If you run the spring boot application, the hibernate tables are created and data is populated from data.sql.
+If you run the spring boot application, the hibernate tables are created and data is populated from import.sql.
 Run the application and go on http://localhost:8080/ for welcome page.
 ```
 

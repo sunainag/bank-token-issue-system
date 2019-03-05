@@ -11,6 +11,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 @Table(name = "address")
 public class Address {
@@ -36,7 +39,8 @@ public class Address {
 	@NotNull
 	private String zipCode;
 
-	@NotNull
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	@CreationTimestamp
 	private Date created;
 
 	@OneToOne(mappedBy = "address", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
@@ -104,10 +108,6 @@ public class Address {
 
 	public Date getCreated() {
 		return created;
-	}
-
-	public void setCreated(Date created) {
-		this.created = created;
 	}
 
 	public Customer getCustomer() {

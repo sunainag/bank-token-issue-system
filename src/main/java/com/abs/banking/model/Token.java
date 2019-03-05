@@ -16,6 +16,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
+
 /**
  * @author sunainag
  * 
@@ -45,7 +48,7 @@ public class Token {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "token")
 	private List<TokenServiceMapping> tokenServices;
 
-	@ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+	@ManyToOne(cascade = { CascadeType.ALL })
 	@JoinColumn(name = "current_counter_id")
 	private Counter currentCounter;
 
@@ -57,7 +60,8 @@ public class Token {
 	@NotNull
 	private StatusCode statusCode = StatusCode.ACTIVE;
 
-	@NotNull
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	@CreationTimestamp
 	private Date created;
 
 	public Token() {

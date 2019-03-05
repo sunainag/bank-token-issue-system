@@ -18,6 +18,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -54,13 +55,13 @@ public class Customer {
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	// Allows dd/MM/yyyy date to be passed into GET request in JSON
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	@CreationTimestamp
 	private Date created;
 
 	@OneToMany(mappedBy = "customer")
 	private List<Token> token;
 
 	public Customer() {
-		this.created = new Date();
 	}
 
 	public long getId() {
@@ -101,10 +102,6 @@ public class Customer {
 
 	public Date getCreated() {
 		return created;
-	}
-
-	public void setCreated(Date created) {
-		this.created = created;
 	}
 
 	public List<Token> getToken() {

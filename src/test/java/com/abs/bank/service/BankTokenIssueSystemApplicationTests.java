@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -22,6 +24,7 @@ import com.abs.banking.model.Customer;
 import com.abs.banking.model.Customer.CustomerType;
 import com.abs.banking.model.Token;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 
 	private static final String uri = "/abs/bank";
@@ -39,20 +42,20 @@ public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 		tokenNumber = 0;
 	}
 
-	// GET API test case
+	// GET API test case for all tokens
 	@Test
-	public void getActiveTokens() throws Exception {
+	public void testA_getActiveTokens() throws Exception {
 		MvcResult mvcResult = mvc
-				.perform(MockMvcRequestBuilders.get(uri + tokenUri + "/5").accept(MediaType.APPLICATION_JSON_VALUE))
+				.perform(MockMvcRequestBuilders.get(uri + tokenUri).accept(MediaType.APPLICATION_JSON_VALUE))
 				.andReturn();
 
 		int status = mvcResult.getResponse().getStatus();
-		assertEquals(400, status);
+		assertEquals(200, status);
 	}
 
 	// exception handler test case
 	@Test // (expected = InvalidTokenException.class)
-	public void whenInvalidTokenNumber_thenException() throws Exception {
+	public void testB_whenInvalidTokenNumber_thenException() throws Exception {
 		MvcResult mvcResult = mvc
 				.perform(MockMvcRequestBuilders.get(uri + tokenUri + "/5").accept(MediaType.APPLICATION_JSON_VALUE))
 				.andReturn();
@@ -63,41 +66,46 @@ public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 
 	// PUT API test case
 	@Test
-	public void issueToken() throws Exception {
+	public void testC_issueToken() throws Exception {
 
 		TokenRequest[] requests = new TokenRequest[3];
 
 		requests[0] = createTokenRequest("A", "Person A", "1234", CustomerType.PREMIUM);
-		requests[1] = createTokenRequest("B", "Person B", "5678", CustomerType.REGULAR);
-		requests[2] = createTokenRequest("C", "Person C", "91011", CustomerType.REGULAR);
+		// requests[1] = createTokenRequest("B", "Person B", "5678",
+		// CustomerType.REGULAR);
+		// requests[2] = createTokenRequest("C", "Person C", "91011",
+		// CustomerType.REGULAR);
 
 		for (TokenRequest tokenRequest : requests) {
-			String inputJson = mapToJson(tokenRequest);
-			MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri + tokenUri)
-					.contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
+			if (tokenRequest != null) {
+				String inputJson = mapToJson(tokenRequest);
+				MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri + tokenUri)
+						.contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
 
-			int status = mvcResult.getResponse().getStatus();
-			assertEquals(201, status);
-			String content = mvcResult.getResponse().getContentAsString();
-			System.out.println(content);
-			assertNotNull(content);
+				int status = mvcResult.getResponse().getStatus();
+				assertEquals(201, status);
+				String content = mvcResult.getResponse().getContentAsString();
+				assertNotNull(content);
+				tokenNumber = Integer
+						.parseInt(content.substring(content.indexOf(':') + 1, content.indexOf(':') + 2).trim());
+			}
 		}
-
 	}
 
-	private TokenRequest createTokenRequest(String servicename, String custName, String custMobile, CustomerType type) {
-		List<String> service = new ArrayList<String>();
-		service.add(0, servicename);
-
-		TokenRequest tokenReq = new TokenRequest();
-		tokenReq.setCustomer(createCustomer(custMobile, custName, type));
-		tokenReq.setServices(service);
-		return tokenReq;
-	}
-
-	// GET API test case
+	// GET API test case for given tokenNumber
 	@Test
-	public void getNextTokenInQueue() throws Exception {
+	public void testD_getToken() throws Exception {
+		MvcResult mvcResult = mvc.perform(
+				MockMvcRequestBuilders.get(uri + tokenUri + "/" + 1).accept(MediaType.APPLICATION_JSON_VALUE))
+				.andReturn();
+
+		int status = mvcResult.getResponse().getStatus();
+		assertEquals(200, status);
+	}
+
+	// GET API test case for next token number from queue for a counter
+	@Test
+	public void testE_getNextTokenInQueue() throws Exception {
 		int counterNumber = this.counterNumber;
 		String getTokenUri = "/" + counterNumber + "/token";
 		MvcResult mvcResult = mvc.perform(
@@ -105,6 +113,7 @@ public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 				.andReturn();
 
 		int status = mvcResult.getResponse().getStatus();
+		System.out.println(status);
 		assertEquals(200, status);
 		String content = mvcResult.getResponse().getContentAsString();
 		Token tokenServed = super.mapFromJson(content, Token.class);
@@ -116,15 +125,15 @@ public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 
 	// PATCH API test case
 	@Test
-	public void comment() throws Exception {
+	public void testF_comment() throws Exception {
 
 		int counterNumber = this.counterNumber;
 		int tokenNumber = this.tokenNumber != 0 ? this.tokenNumber : 1;
 		String patchUri = "/" + counterNumber + "/tokens/" + tokenNumber;
 
-		Map<String, Object> updates=new HashMap<>();
+		Map<String, Object> updates = new HashMap<>();
 		updates.put("comments", "Bring papers");
-		
+
 		String inputJson = super.mapToJson(updates);
 		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.patch(uri + counterUri + patchUri)
 				.contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
@@ -134,6 +143,16 @@ public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 		String content = mvcResult.getResponse().getContentAsString();
 		assertEquals(content, "comments updated");
 
+	}
+
+	private TokenRequest createTokenRequest(String servicename, String custName, String custMobile, CustomerType type) {
+		List<String> service = new ArrayList<String>();
+		service.add(0, servicename);
+
+		TokenRequest tokenReq = new TokenRequest();
+		tokenReq.setCustomer(createCustomer(custMobile, custName, type));
+		tokenReq.setServices(service);
+		return tokenReq;
 	}
 
 	private Customer createCustomer(String mobile, String name, CustomerType type) {

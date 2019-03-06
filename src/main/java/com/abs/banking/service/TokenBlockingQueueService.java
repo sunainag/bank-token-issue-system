@@ -7,6 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -132,6 +134,7 @@ public class TokenBlockingQueueService implements TokenQueueService {
 
 	}
 
+	@Transactional
 	private Counter addToTokenQueue(Token token) throws InterruptedException {
 		if (token == null || token.isInactive()) {
 			throw new InvalidTokenException();

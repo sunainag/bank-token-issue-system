@@ -1,8 +1,8 @@
 package com.abs.banking.service;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,8 +23,8 @@ public class CounterServiceImpl implements CounterService {
 	CounterAllocator counterAllocator;
 
 	@Override
-	public List<Counter> getAllCounters() {
-		List<Counter> counters = new ArrayList<>();
+	public Set<Counter> getAllCounters() {
+		Set<Counter> counters = new HashSet<>();
 		counterRepo.findAll().forEach(counters::add);
 		return counters;
 	}

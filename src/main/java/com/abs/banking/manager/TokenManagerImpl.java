@@ -40,7 +40,7 @@ public class TokenManagerImpl implements TokenManager {
 	public ResponseEntity<String> getToken(Integer tokenNumber) {
 		Token token = tokenService.getTokenByNumber(tokenNumber);
 		return ResponseEntity.ok("Token " + token.getNumber() + " is waiting for counter:"
-				+ token.getCounterNumber() + " issued currently for service:" + token.getCurrentService());
+				+ token.getCounterNumber() + " issued currently for service:" + token.getCurrentService().getName());
 	}
 
 	@Override

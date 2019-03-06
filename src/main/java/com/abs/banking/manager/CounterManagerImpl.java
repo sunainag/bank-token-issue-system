@@ -1,6 +1,7 @@
 package com.abs.banking.manager;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -44,8 +45,13 @@ public class CounterManagerImpl implements CounterManager {
 	}
 
 	@Override
-	public List<Counter> getAllCounters() {
-		return counterService.getAllCounters();
+	public Set<String> getAllCounters() {
+		Set<Counter> counters= counterService.getAllCounters();
+		Set<String> counterDetails = new HashSet<>();
+		counters.forEach(counter->{
+			counterDetails.add(counter.toString());
+		});
+		return counterDetails;
 	}
 
 	@Override

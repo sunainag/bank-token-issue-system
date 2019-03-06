@@ -1,16 +1,14 @@
 package com.abs.banking.manager;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
 import org.springframework.http.ResponseEntity;
 
-import com.abs.banking.model.Counter;
-
 public interface CounterManager {
 
-	List<Counter> getAllCounters();
+	Set<String> getAllCounters();
 
 	ResponseEntity<String> getCounter(Integer counterNumber);
 

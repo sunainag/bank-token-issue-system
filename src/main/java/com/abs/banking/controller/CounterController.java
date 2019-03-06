@@ -1,7 +1,7 @@
 package com.abs.banking.controller;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.abs.banking.manager.CounterManager;
-import com.abs.banking.model.Counter;
 
 @RestController
 @RequestMapping(value = "/abs/bank")
@@ -35,7 +34,7 @@ public class CounterController {
 	 * @return Counter details like counter number, queueSize and priority
 	 */
 	@GetMapping(value = "/counters")
-	public List<Counter> getCounterDetails() {
+	public Set<String> getCounterDetails() {
 		return counterManager.getAllCounters();
 	}
 

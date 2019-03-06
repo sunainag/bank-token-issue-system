@@ -40,8 +40,7 @@ public class CounterManagerImpl implements CounterManager {
 	@Override
 	public ResponseEntity<?> getNextTokenFromQueue(Integer counterNumber) {
 		Token token = tokenQueueService.pollNextInQueue(counterService.getCounter(counterNumber));
-		return ResponseEntity.status(HttpStatus.OK)
-				.body("Next token from queue:" + token.getNumber() + " is assigned to this counter:" + counterNumber);
+		return ResponseEntity.ok("Next token from queue:" + token.getNumber() + " is assigned to this counter:" + counterNumber);
 	}
 
 	@Override
@@ -53,7 +52,7 @@ public class CounterManagerImpl implements CounterManager {
 	public ResponseEntity<String> getCounter(Integer counterNumber) {
 		Counter counter = counterService.getCounter(counterNumber);
 		if (counter != null)
-			return ResponseEntity.status(HttpStatus.OK).body(counter.toString());
+			return ResponseEntity.ok(counter.toString());
 		throw new InvalidCounterException();
 	}
 

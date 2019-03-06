@@ -29,26 +29,31 @@ public class TokenManagerImpl implements TokenManager {
 	CounterService counterService;
 
 	@Override
-	public ResponseEntity<String> issueToken(TokenRequest tokenReq) {
-
-		Customer customer = customerService.getByToken(tokenReq);
-		Token token = tokenService.issueToken(customer, tokenReq.getServices());
-
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.body("Token number:" + token.getNumber() + " is assigned counter number:" + token.getCounterNumber());
-	}
-
-	@Override
-	public Token getToken(Integer tokenNumber) {
-		return tokenService.getTokenByNumber(tokenNumber);
-	}
-
-	@Override
 	public Map<Integer, List<Integer>> getActiveTokens() {
 		List<Token> activeTokens = tokenService.findByStatusCode(Token.StatusCode.ACTIVE);
 		Map<Integer, List<Integer>> counterToTokens = activeTokens.stream().collect(Collectors
 				.groupingBy(t -> t.getCounterNumber(), Collectors.mapping(Token::getNumber, Collectors.toList())));
 		return counterToTokens;
+	}
+
+	@Override
+	public ResponseEntity<String> getToken(Integer tokenNumber) {
+		Token token = tokenService.getTokenByNumber(tokenNumber);
+		return ResponseEntity.status(HttpStatus.OK).body("Token " + token.getNumber() + " is waiting for counter:"
+				+ token.getCounterNumber() + " issued currently for service:" + token.getCurrentService());
+	}
+
+	@Override
+	public ResponseEntity<String> issueToken(TokenRequest tokenReq) {
+
+		Customer customer = customerService.getByToken(tokenReq);
+		Token token = tokenService.issueToken(customer, tokenReq.getServices());
+		if (token != null && token.getCurrentCounter() != null)
+			return ResponseEntity.status(HttpStatus.CREATED).body("Token number:" + token.getNumber()
+					+ " is assigned counter number:" + token.getCurrentCounter().getNumber());
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body("Token could not be issued due to server error. Please debug to find the cause. Counter assigned to token is: "
+						+ token.getCurrentCounter());
 	}
 
 }

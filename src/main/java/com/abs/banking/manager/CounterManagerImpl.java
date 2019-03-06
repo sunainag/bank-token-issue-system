@@ -2,6 +2,8 @@ package com.abs.banking.manager;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +38,10 @@ public class CounterManagerImpl implements CounterManager {
 	CounterAllocator counterAllocator;
 
 	@Override
-	public Token getNextTokenFromQueue(Integer counterNumber) {
-		return tokenQueueService.pollNextInQueue(counterService.getCounter(counterNumber));
+	public ResponseEntity<?> getNextTokenFromQueue(Integer counterNumber) {
+		Token token = tokenQueueService.pollNextInQueue(counterService.getCounter(counterNumber));
+		return ResponseEntity.status(HttpStatus.OK)
+				.body("Next token from queue:" + token.getNumber() + " is assigned to this counter:" + counterNumber);
 	}
 
 	@Override
@@ -46,10 +50,10 @@ public class CounterManagerImpl implements CounterManager {
 	}
 
 	@Override
-	public ResponseEntity<Counter> getCounter(Integer counterNumber) {
+	public ResponseEntity<String> getCounter(Integer counterNumber) {
 		Counter counter = counterService.getCounter(counterNumber);
 		if (counter != null)
-			return ResponseEntity.status(HttpStatus.OK).body(counter);
+			return ResponseEntity.status(HttpStatus.OK).body(counter.toString());
 		throw new InvalidCounterException();
 	}
 
@@ -59,13 +63,16 @@ public class CounterManagerImpl implements CounterManager {
 	}
 
 	@Override
-	public ResponseEntity<Integer> updateTokenStatusById(Integer counterNumber, Integer tokenNumber,
+	@Transactional
+	public ResponseEntity<String> updateTokenStatusById(Integer counterNumber, Integer tokenNumber,
 			String newTokenStatus) {
 		if (validateCounterForToken(counterNumber, tokenNumber)) {
 			resolveToken(tokenNumber, newTokenStatus);
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body(tokenNumber);
+			return ResponseEntity.status(HttpStatus.ACCEPTED)
+					.body(tokenNumber + " is udpated with status " + newTokenStatus);
 		}
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(tokenNumber);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body(tokenNumber + " could not be " + newTokenStatus);
 	}
 
 	private Token resolveToken(Integer tokenNumber, String newTokenStatus) {

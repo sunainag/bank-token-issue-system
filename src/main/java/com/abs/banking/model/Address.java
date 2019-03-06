@@ -9,10 +9,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 @Table(name = "address")
@@ -39,8 +40,8 @@ public class Address {
 	@NotNull
 	private String zipCode;
 
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
-	@CreationTimestamp
+	@Temporal(TemporalType.DATE)
+	@CreatedDate
 	private Date created;
 
 	@OneToOne(mappedBy = "address", cascade = { CascadeType.MERGE, CascadeType.PERSIST })

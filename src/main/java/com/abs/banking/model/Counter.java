@@ -1,12 +1,14 @@
 package com.abs.banking.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,8 +42,8 @@ public class Counter {
 	@Column(name = "queue_size")
 	private int queueSize;
 
-	@OneToMany(mappedBy = "currentCounter")
-	private Collection<Token> tokens = new ArrayList<Token>();
+	@OneToMany(mappedBy = "currentCounter", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private Set<Token> tokens = new HashSet<>();
 
 	public Counter() {
 	}
@@ -70,14 +72,18 @@ public class Counter {
 		return queueSize;
 	}
 
-	public Collection<Token> getToken() {
+	public Set<Token> getTokens() {
 		return tokens;
 	}
-	
+
 	/*******************************/
-	
+
 	public void setQueueSize(int queueSize) {
 		this.queueSize = queueSize;
+	}
+
+	public void setTokens(Set<Token> tokens) {
+		this.tokens = tokens;
 	}
 
 	@Override
@@ -86,7 +92,7 @@ public class Counter {
 	}
 
 	/************Builder class*************/
-	
+
 	public static class CounterBuilder {
 
 		private int number;

@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,10 +15,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.data.annotation.CreatedDate;
 
 /**
  * @author sunainag
@@ -48,7 +50,7 @@ public class Token {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "token")
 	private List<TokenServiceMapping> tokenServices;
 
-	@ManyToOne(cascade = { CascadeType.ALL })
+	@ManyToOne(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
 	@JoinColumn(name = "current_counter_id")
 	private Counter currentCounter;
 
@@ -60,8 +62,8 @@ public class Token {
 	@NotNull
 	private StatusCode statusCode = StatusCode.ACTIVE;
 
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
-	@CreationTimestamp
+	@Temporal(TemporalType.DATE)
+	@CreatedDate
 	private Date created;
 
 	public Token() {
@@ -113,13 +115,14 @@ public class Token {
 		else
 			return new Integer(0);
 	}
+
 	/****************************/
-	
+
 	/********Setters************/
 	public void setTokenServices(List<TokenServiceMapping> tokenServices) {
 		this.tokenServices = tokenServices;
 	}
-	
+
 	public void setCurrentCounter(Counter currentCounter) {
 		this.currentCounter = currentCounter;
 	}
@@ -127,10 +130,10 @@ public class Token {
 	public void setCurrentService(Services currentService) {
 		this.currentService = currentService;
 	}
-	
+
 	public void setStatusCode(StatusCode statusCode) {
 		this.statusCode = statusCode;
 	}
 	/****************************/
-	
+
 }

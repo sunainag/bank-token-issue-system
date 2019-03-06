@@ -1,5 +1,3 @@
-use bank_token_issue_system;
-
 CREATE DATABASE IF NOT EXISTS bank_token_issue_system;
 USE bank_token_issue_system;
 

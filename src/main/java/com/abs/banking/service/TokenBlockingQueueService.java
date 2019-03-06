@@ -8,6 +8,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -18,7 +20,7 @@ import com.abs.banking.model.Counter;
 import com.abs.banking.model.Services.ServicesType;
 import com.abs.banking.model.Token;
 import com.abs.banking.model.Token.StatusCode;
-import com.abs.banking.repository.TokenRepository;
+import com.abs.banking.repository.CounterRepository;
 import com.abs.banking.util.counter.allocator.CounterAllocator;
 
 @Service
@@ -28,7 +30,7 @@ public class TokenBlockingQueueService implements TokenQueueService {
 	CounterAllocator counterAllocator;
 
 	@Autowired
-	TokenRepository tokenRepo;
+	CounterRepository counterRepo;
 
 	TokenQueueConsumer producer;
 
@@ -36,13 +38,23 @@ public class TokenBlockingQueueService implements TokenQueueService {
 
 	Map<Integer, PriorityBlockingQueue<Token>> counterWiseQueueMap;
 
+	@EventListener(ApplicationReadyEvent.class)
+	public void initialize() {
+		if (tokenQueue == null) {
+			tokenQueue = new LinkedBlockingQueue<>();
+			counterWiseQueueMap = new ConcurrentHashMap<>();
+			producer = new TokenQueueConsumer();
+			producer.start();
+
+		}
+	}
+
 	/* 
 	 * Issued token is added to the counter queue
 	 * Initialize the queue, if not done before
 	 */
 	@Override
 	public void putInQueue(Token token) {
-		initialize();
 		tokenQueue.add(token);
 	}
 
@@ -56,8 +68,9 @@ public class TokenBlockingQueueService implements TokenQueueService {
 			if (!CollectionUtils.isEmpty(counterWiseQueueMap) && counterWiseQueueMap.containsKey(counter.getNumber())) {
 				PriorityBlockingQueue<Token> queue = counterWiseQueueMap.get(counter.getNumber());
 				Token token = queue.take();
-				counter.setQueueSize(counter.getQueueSize()-1);
-				return tokenRepo.save(token);
+				counter.setQueueSize(counter.getQueueSize() - 1);
+				counterRepo.save(counter);
+				return token;
 			}
 			else {
 				throw new InvalidTokenQueueException();
@@ -119,16 +132,6 @@ public class TokenBlockingQueueService implements TokenQueueService {
 
 	}
 
-	private void initialize() {
-		if (tokenQueue == null) {
-			tokenQueue = new LinkedBlockingQueue<>();
-			counterWiseQueueMap = new ConcurrentHashMap<>();
-			producer = new TokenQueueConsumer();
-			producer.start();
-
-		}
-	}
-
 	private Counter addToTokenQueue(Token token) throws InterruptedException {
 		if (token == null || token.isInactive()) {
 			throw new InvalidTokenException();
@@ -138,7 +141,8 @@ public class TokenBlockingQueueService implements TokenQueueService {
 		if (counter == null)
 			throw new CounterNotAvailableException();
 		token.setCurrentCounter(counter);
-		tokenRepo.save(token);
+		counter.getTokens().add(token);
+		counterRepo.save(counter);
 		Thread.sleep(1000);
 		PriorityBlockingQueue<Token> counterQueue = counterWiseQueueMap.get(counter.getNumber());
 		if (counterQueue == null) {

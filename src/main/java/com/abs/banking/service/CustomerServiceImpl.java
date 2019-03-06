@@ -1,7 +1,5 @@
 package com.abs.banking.service;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -31,7 +29,6 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	@Transactional
 	public Customer create(Customer customer) {
 		Customer cust = customer;
 		if (customer != null) {
@@ -48,8 +45,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public Customer getByToken(TokenRequest tokenReq) {
 		if (tokenReq.getCustomer() == null)
-			throw new ResponseStatusException(
-			          HttpStatus.NOT_FOUND, "Customer Not Found");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer Not Found");
 		Customer customer = findByMobile(tokenReq.getCustomer().getMobile());
 		if (customer == null) {
 			customer = create(tokenReq.getCustomer());

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.abs.banking.manager.CounterManager;
 import com.abs.banking.model.Counter;
-import com.abs.banking.model.Token;
 
 @RestController
 @RequestMapping(value = "/abs/bank")
@@ -28,7 +27,7 @@ public class CounterController {
 	private CounterManager counterManager;
 
 	@GetMapping(value = "/counters/{counterNumber}/token")
-	public Token getNextTokenInQueue(@PathVariable("counterNumber") Integer counterNumber) {
+	public ResponseEntity<?> getNextTokenInQueue(@PathVariable("counterNumber") Integer counterNumber) {
 		return counterManager.getNextTokenFromQueue(counterNumber);
 	}
 
@@ -41,23 +40,23 @@ public class CounterController {
 	}
 
 	@GetMapping(value = "/counters/{counterNumber}")
-	public ResponseEntity<Counter> getCounterByNumber(@PathVariable("counterNumber") @NotNull Integer counterNum) {
+	public ResponseEntity<?> getCounterByNumber(@PathVariable("counterNumber") @NotNull Integer counterNum) {
 		return counterManager.getCounter(counterNum);
 	}
 
 	@PatchMapping(value = "/counters/{counterNumber}/tokens/{tokenNumber}")
 	public ResponseEntity<?> performTokenAction(@PathVariable("tokenNumber") @NotNull Integer tokenNumber,
 			@RequestBody Map<String, Object> updates) {
-		String comments = updates.get("comments").toString();
-		String status = updates.get("action").toString();
-		
+		String comments = updates.get("comments") != null ? updates.get("comments").toString() : "";
+		String status = updates.get("action") != null ? updates.get("action").toString() : "";
+
 		if (!StringUtils.isEmpty(comments)) {
 			counterManager.setComments(tokenNumber, comments);
-			return ResponseEntity.ok("comments updated");
+			return ResponseEntity.ok("comments updated for token:" + tokenNumber);
 		}
-		if(!StringUtils.isEmpty(status)) {
+		if (!StringUtils.isEmpty(status)) {
 			counterManager.updateTokenStatusById(tokenNumber, tokenNumber, status);
-			return ResponseEntity.ok("New token status for token " + tokenNumber + " is " +status);
+			return ResponseEntity.ok("New token status for token " + tokenNumber + " is " + status);
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You may comment/cancel/complete the token");
 	}

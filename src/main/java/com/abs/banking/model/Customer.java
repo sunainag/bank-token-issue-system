@@ -16,10 +16,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.data.annotation.CreatedDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -54,8 +55,8 @@ public class Customer {
 	// Formats output date when this DTO is passed through JSON
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	// Allows dd/MM/yyyy date to be passed into GET request in JSON
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
-	@CreationTimestamp
+	@Temporal(TemporalType.DATE)
+	@CreatedDate
 	private Date created;
 
 	@OneToMany(mappedBy = "customer")

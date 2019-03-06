@@ -41,7 +41,7 @@ public class TokenServiceImpl implements TokenService {
 		Token token = generateTokenNumber(customer);
 		assignTokenServices(token, services);
 		tokenQueueService.putInQueue(token);
-		return save(token);
+		return getTokenByNumber(token.getNumber());
 	}
 
 	@Override

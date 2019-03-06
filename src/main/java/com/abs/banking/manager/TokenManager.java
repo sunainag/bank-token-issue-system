@@ -6,7 +6,6 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 
 import com.abs.banking.dto.TokenRequest;
-import com.abs.banking.model.Token;
 
 /**
  * @author sunainag
@@ -17,20 +16,20 @@ import com.abs.banking.model.Token;
 public interface TokenManager {
 
 	/**
-	 * @param tokenRequest Payload sent in the request for token creation
-	 * @return Response with details of the token created
+	 * @return A Map of Counter number to the List of token numbers assigned to it(@see Token)
 	 */
-	ResponseEntity<String> issueToken(TokenRequest tokenRequest);
+	Map<Integer, List<Integer>> getActiveTokens();
 
 	/**
 	 * @param number Token number alloted to the customer(@see Customer)
 	 * @return Token
 	 */
-	Token getToken(Integer number);
+	ResponseEntity<String> getToken(Integer number);
 
 	/**
-	 * @return A Map of Counter number to the List of token numbers assigned to it(@see Token)
+	 * @param tokenRequest Payload sent in the request for token creation
+	 * @return Response with details of the token created
 	 */
-	Map<Integer, List<Integer>> getActiveTokens();
+	ResponseEntity<String> issueToken(TokenRequest tokenRequest);
 
 }

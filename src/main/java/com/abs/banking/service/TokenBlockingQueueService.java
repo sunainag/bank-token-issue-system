@@ -35,7 +35,7 @@ public class TokenBlockingQueueService implements TokenQueueService {
 
 	@Autowired
 	CounterRepository counterRepo;
-	
+
 	@Autowired
 	TokenRepository tokenRepo;
 
@@ -131,7 +131,12 @@ public class TokenBlockingQueueService implements TokenQueueService {
 
 		@Override
 		public int compare(Token t1, Token t2) {
-			return getCurrentTokenServiceMapping(t1).getPriority().ordinal() - getCurrentTokenServiceMapping(t2).getPriority().ordinal();
+			if(getCurrentTokenServiceMapping(t1)==null && getCurrentTokenServiceMapping(t2)==null)
+				return 0;
+			if(getCurrentTokenServiceMapping(t1)==null || getCurrentTokenServiceMapping(t2)==null)
+				return -1;
+			return getCurrentTokenServiceMapping(t1).getPriority().ordinal()
+					- getCurrentTokenServiceMapping(t2).getPriority().ordinal();
 		}
 
 	}
@@ -157,12 +162,14 @@ public class TokenBlockingQueueService implements TokenQueueService {
 		counterWiseQueueMap.put(counter.getNumber(), counterQueue);
 		return counter;
 	}
-	
+
 	private TokenServiceMapping getCurrentTokenServiceMapping(Token token) {
 		List<Token> list = tokenRepo.findByNumber(token.getNumber());
-		Token temp = list.stream().filter(t-> t.getTokenServices()!=null).findFirst().get();
-		return temp.getTokenServices().stream().filter(tsm -> tsm.getService().equals(token.getCurrentService())).findFirst()
-				.orElseThrow(InvalidTokenException::new);
+		Token temp = list.stream().filter(t -> t.getTokenServices() != null).findFirst().get();
+		if (temp!=null && temp.getTokenServices() != null)
+			return temp.getTokenServices().stream().filter(tsm -> tsm.getService().equals(token.getCurrentService()))
+					.findFirst().orElseThrow(InvalidTokenException::new);
+		return null;
 	}
 
 }

@@ -26,7 +26,7 @@ public class TokenServiceMapping {
 	public TokenServiceMapping(Token token, Services service) {
 		this.service = service;
 		this.token = token;
-		this.priority=ServicePriority.valueOf(service.getType().name());
+		this.priority=ServicePriority.valueOf(token.getCustomer().getType().name());
 	}
 
 	@Id

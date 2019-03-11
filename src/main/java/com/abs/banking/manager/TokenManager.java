@@ -25,7 +25,7 @@ public interface TokenManager {
 	 * @return Token
 	 */
 	ResponseEntity<String> getToken(Integer number);
-
+	
 	/**
 	 * @param tokenRequest Payload sent in the request for token creation
 	 * @return Response with details of the token created

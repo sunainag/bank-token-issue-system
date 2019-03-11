@@ -3,13 +3,10 @@ package com.abs.banking.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.abs.banking.exception.InvalidTokenException;
 import com.abs.banking.exception.ServicesException;
 import com.abs.banking.model.Customer;
 import com.abs.banking.model.Services;
@@ -21,6 +18,7 @@ import com.abs.banking.repository.TokenRepository;
 import com.abs.banking.util.sequence.generator.SequenceGenerator;
 
 @Service
+@Transactional
 public class TokenServiceImpl implements TokenService {
 
 	@Autowired
@@ -46,13 +44,9 @@ public class TokenServiceImpl implements TokenService {
 
 	@Override
 	public Token getTokenByNumber(Integer tokenNumber) {
-		List<Token> token = tokenRepo.findByNumber(tokenNumber);
-		if (!CollectionUtils.isEmpty(token))
-			return token.get(0); // expected unique column `number` in table `token`
-		else
-			throw new InvalidTokenException();
+		return tokenRepo.findFirstByNumberOrderByIdDesc(tokenNumber);
 	}
-
+	
 	@Override
 	@Transactional
 	public void comment(Integer tokenNumber, String comments) {
@@ -61,12 +55,10 @@ public class TokenServiceImpl implements TokenService {
 				.findFirst().get().setComments(comments);
 		save(token);
 	}
-
+	
 	@Override
 	public Services findServiceById(Long nextServiceId) {
-		if (serviceRepo.findById(nextServiceId).isPresent())
-			return serviceRepo.findById(nextServiceId).get();
-		throw new ServicesException();
+		return serviceRepo.findById(nextServiceId).orElseThrow(ServicesException::new);
 	}
 
 	@Override
@@ -80,15 +72,19 @@ public class TokenServiceImpl implements TokenService {
 	}
 
 	@Override
+	@Transactional
 	public Token save(Token token) {
-		return tokenRepo.save(token);
+		return tokenRepo.saveAndFlush(token);
 	}
 
-	//TODO
+	// TODO
 	@Override
 	public boolean existsToken(Customer customer, List<String> services) {
-		/*Services service = findServiceByName(services.get(0));
-		return tokenRepo.findByCustomerAndServices(customer.getId(),service.getId()).isPresent();*/
+		/*
+		 * Services service = findServiceByName(services.get(0)); return
+		 * tokenRepo.findByCustomerAndServices(customer.getId(),service.getId()).
+		 * isPresent();
+		 */
 		return true;
 	}
 
@@ -122,5 +118,4 @@ public class TokenServiceImpl implements TokenService {
 	private Services findServiceByName(String name) {
 		return serviceRepo.findByName(name);
 	}
-
 }

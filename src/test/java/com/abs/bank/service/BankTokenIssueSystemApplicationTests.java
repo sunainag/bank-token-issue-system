@@ -95,8 +95,8 @@ public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 	// GET API test case for given tokenNumber
 	@Test
 	public void testD_getToken() throws Exception {
-		MvcResult mvcResult = mvc.perform(
-				MockMvcRequestBuilders.get(uri + tokenUri + "/" + 1).accept(MediaType.APPLICATION_JSON_VALUE))
+		MvcResult mvcResult = mvc
+				.perform(MockMvcRequestBuilders.get(uri + tokenUri + "/" + 1).accept(MediaType.APPLICATION_JSON_VALUE))
 				.andReturn();
 
 		int status = mvcResult.getResponse().getStatus();
@@ -144,7 +144,7 @@ public class BankTokenIssueSystemApplicationTests extends AbstractTest {
 		assertEquals(content, "comments updated");
 
 	}
-
+	
 	private TokenRequest createTokenRequest(String servicename, String custName, String custMobile, CustomerType type) {
 		List<String> service = new ArrayList<String>();
 		service.add(0, servicename);

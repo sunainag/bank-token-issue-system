@@ -44,7 +44,7 @@ public class CounterController {
 	}
 
 	@PatchMapping(value = "/counters/{counterNumber}/tokens/{tokenNumber}")
-	public ResponseEntity<?> performTokenAction(@PathVariable("tokenNumber") @NotNull Integer tokenNumber,
+	public ResponseEntity<?> performTokenAction(@PathVariable("counterNumber") @NotNull Integer counterNumber,@PathVariable("tokenNumber") @NotNull Integer tokenNumber,
 			@RequestBody Map<String, Object> updates) {
 		String comments = updates.get("comments") != null ? updates.get("comments").toString() : "";
 		String status = updates.get("action") != null ? updates.get("action").toString() : "";
@@ -54,7 +54,7 @@ public class CounterController {
 			return ResponseEntity.ok("comments updated for token:" + tokenNumber);
 		}
 		if (!StringUtils.isEmpty(status)) {
-			counterManager.updateTokenStatusById(tokenNumber, tokenNumber, status);
+			counterManager.updateTokenStatusById(counterNumber, tokenNumber, status);
 			return ResponseEntity.ok("New token status for token " + tokenNumber + " is " + status);
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You may comment/cancel/complete the token");

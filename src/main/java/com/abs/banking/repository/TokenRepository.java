@@ -13,4 +13,6 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
 	List<Token> findByNumber(Integer number);
 
 	List<Token> findByStatusCode(Token.StatusCode statusCode);
+	
+	Token findFirstByNumberOrderByIdDesc(Integer number);
 }

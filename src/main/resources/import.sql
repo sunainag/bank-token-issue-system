@@ -81,6 +81,7 @@ CREATE TABLE `token_service_mapping` (
   `comments` varchar(255) DEFAULT NULL,
   `service_id` bigint(20) NOT NULL,
   `token_id` bigint(20) NOT NULL,
+  `priority` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`service_id`) REFERENCES `service` (`id`),
   FOREIGN KEY (`token_id`) REFERENCES `token` (`id`)

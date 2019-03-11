@@ -11,6 +11,6 @@ public interface CounterService {
 
 	Counter getCounter(Integer counterNumber);
 
-	Token assignNextService(Token token);
+	Token resolveToken(Integer tokenNumber, String newTokenStatus);
 
 }

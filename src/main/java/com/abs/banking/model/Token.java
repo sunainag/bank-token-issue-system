@@ -27,7 +27,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 /**
  * @author sunainag
  * 
- * JPA Entity for Token generated for the customer on request
+ *         JPA Entity for Token generated for the customer on request
  *
  */
 @Entity
@@ -51,7 +51,7 @@ public class Token {
 	@JoinColumn(name = "customer_id")
 	Customer customer;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "token")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "token",fetch = FetchType.EAGER)
 	private List<TokenServiceMapping> tokenServices;
 
 	@ManyToOne(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
@@ -78,10 +78,21 @@ public class Token {
 	public Token(int number, Customer cust) {
 		this.number = number;
 		this.customer = cust;
-		this.created = new Date();
 	}
 
-	/********Getters************/
+	public Token(Token t) {
+		this(t.getNumber(), t.getCurrentCounter(), t.getCurrentService(), t.getCustomer(), t.getStatusCode());
+	}
+
+	private Token(int number,Counter currentCounter, Services currentService, Customer customer,StatusCode statusCode) {
+		this.currentCounter=currentCounter;
+		this.number=number;
+		this.currentService=currentService;
+		this.customer=customer;
+		this.statusCode=statusCode;
+	}
+
+	/******** Getters ************/
 	public int getNumber() {
 		return number;
 	}
@@ -123,7 +134,7 @@ public class Token {
 
 	/****************************/
 
-	/********Setters************/
+	/******** Setters ************/
 	public void setTokenServices(List<TokenServiceMapping> tokenServices) {
 		this.tokenServices = tokenServices;
 	}

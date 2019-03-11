@@ -4,7 +4,9 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -20,6 +22,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  * @author sunainag
@@ -29,6 +32,7 @@ import org.springframework.data.annotation.CreatedDate;
  */
 @Entity
 @Table(name = "token")
+@EntityListeners(AuditingEntityListener.class)
 public class Token {
 
 	public enum StatusCode {
@@ -64,6 +68,7 @@ public class Token {
 
 	@Temporal(TemporalType.DATE)
 	@CreatedDate
+	@Column(updatable = false)
 	private Date created;
 
 	public Token() {

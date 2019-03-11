@@ -57,6 +57,7 @@ public class Customer {
 	// Allows dd/MM/yyyy date to be passed into GET request in JSON
 	@Temporal(TemporalType.DATE)
 	@CreatedDate
+	@Column(updatable = false)
 	private Date created;
 
 	@OneToMany(mappedBy = "customer")

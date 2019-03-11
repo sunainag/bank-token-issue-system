@@ -3,6 +3,7 @@ package com.abs.banking.model;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -42,6 +43,7 @@ public class Address {
 
 	@Temporal(TemporalType.DATE)
 	@CreatedDate
+	@Column(updatable = false)
 	private Date created;
 
 	@OneToOne(mappedBy = "address", cascade = { CascadeType.MERGE, CascadeType.PERSIST })

@@ -3,6 +3,8 @@ package com.abs.banking.manager;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,8 @@ import com.abs.banking.util.counter.allocator.CounterAllocator;
 @Component
 @Transactional
 public class CounterManagerImpl implements CounterManager {
+	
+	private final static Logger LOG = LoggerFactory.getLogger(CounterManagerImpl.class);
 
 	@Autowired
 	CustomerService customerService;
@@ -40,6 +44,7 @@ public class CounterManagerImpl implements CounterManager {
 	@Override
 	public ResponseEntity<?> getNextTokenFromQueue(Integer counterNumber) {
 		Token token = tokenQueueService.pollNextInQueue(counterService.getCounter(counterNumber));
+		LOG.info("Next token in this queue is: "+token.getNumber());
 		return ResponseEntity
 				.ok("Next token from queue:" + token.getNumber() + " is assigned to this counter:" + counterNumber);
 	}

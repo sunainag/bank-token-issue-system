@@ -109,10 +109,6 @@ public class Address {
 		this.zipCode = zipCode;
 	}
 
-	public Date getCreated() {
-		return created;
-	}
-
 	public Customer getCustomer() {
 		return customer;
 	}

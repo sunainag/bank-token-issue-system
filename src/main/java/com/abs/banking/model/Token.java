@@ -117,10 +117,6 @@ public class Token {
 		return statusCode;
 	}
 
-	public Date getCreated() {
-		return created;
-	}
-
 	public boolean isInactive() {
 		return StatusCode.CANCELLED.equals(this.statusCode) || StatusCode.COMPLETED.equals(this.statusCode);
 	}
@@ -129,7 +125,7 @@ public class Token {
 		if (this.getCurrentCounter() != null)
 			return this.getCurrentCounter().getNumber();
 		else
-			return new Integer(0);
+			return Integer.valueOf(0);
 	}
 
 	/****************************/

@@ -109,11 +109,25 @@ While issuing a token, the systems identifies all the services that need to be s
 A Simple date based sequential generator has been used. The sequence gets reset at 00 hours everyday.
 ```
 
+**Swagger**
+```
+Swagger 2 is enabled through the @EnableSwagger2 annotation.
+After the Docket bean is defined, its select() method returns an instance of ApiSelectorBuilder, which provides a way to control the endpoints exposed by Swagger.
+
+Predicates for selection of RequestHandlers can be configured with the help of RequestHandlerSelectors and PathSelectors. Using any() for both will make documentation for your entire API available through Swagger.
+
+This configuration is enough to integrate Swagger 2 into an existing Spring Boot project. For other Spring projects, some additional tuning is required.
+
+```
+```
+The default port for tomcat server is set to 9090.
+The swagger documentation can be viewed from:
+http://localhost:9090/swagger-ui.html
+```
+
 **ToDo**
 ```
 Authorization: Role based access for updating tokens
 Token serve ratio based on premium or regular customers
-Swagger implementation
-Logger
 ```
 

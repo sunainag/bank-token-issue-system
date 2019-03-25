@@ -102,10 +102,6 @@ public class Customer {
 		this.address = address;
 	}
 
-	public Date getCreated() {
-		return created;
-	}
-
 	public List<Token> getToken() {
 		return token;
 	}
